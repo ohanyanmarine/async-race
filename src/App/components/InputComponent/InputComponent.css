@@ -1,0 +1,16 @@
+.input-outlined {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 12px;
+  border: 1px solid #ccc;
+  transition: all 0.3s ease;
+  border-radius: 6px;
+  padding: 8px 12px;
+  box-sizing: border-box;
+  margin: 8px;
+  text-transform: uppercase;
+}
+
+.input-color {
+  width: 25px;
+  height: 25px;
+}

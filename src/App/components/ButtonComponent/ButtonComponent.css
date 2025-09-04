@@ -1,0 +1,86 @@
+.neon-button {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 16px;
+  border: 2px solid;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+}
+
+.neon-button.rect {
+  border-radius: 8px;
+  padding: 10px 20px;
+  margin: 3px;
+}
+
+.neon-button.large {
+  width: 160px;
+  font-size: 18px;
+}
+
+.neon-button.medium {
+  font-size: 14px;
+  padding: 8px 18px;
+}
+
+.neon-button.small {
+  width: 80px;
+  font-size: 12px;
+  padding: 5px 12px;
+}
+
+.neon-button.square {
+  width: 25px;
+  height: 25px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  margin: 5px;
+}
+
+.neon-button.blue {
+  border-color: #00f0ff;
+  box-shadow:
+    0 0 8px #00f0ff,
+    0 0 16px #00f0ff;
+}
+
+.neon-button.pink {
+  border-color: #ff4fff;
+  box-shadow:
+    0 0 8px #ff4fff,
+    0 0 16px #ff4fff;
+}
+
+.neon-button.green {
+  border-color: #00ff85;
+  box-shadow:
+    0 0 8px #00ff85,
+    0 0 16px #00ff85;
+}
+
+.neon-button.purple {
+  border-color: #a64dff;
+  box-shadow:
+    0 0 8px #a64dff,
+    0 0 16px #a64dff;
+}
+
+.neon-button.yellow {
+  border-color: #ffe066;
+  box-shadow:
+    0 0 8px #ffe066,
+    0 0 16px #ffe066;
+}
+
+.neon-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  box-shadow: none;
+  border-color: gray;
+  color: gray;
+}
