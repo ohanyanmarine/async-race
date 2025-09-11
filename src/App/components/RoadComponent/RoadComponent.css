@@ -19,6 +19,8 @@
 
 .car {
   margin-left: 10px;
+  position: relative;
+  transition: transform linear;
 }
 
 .car-name {

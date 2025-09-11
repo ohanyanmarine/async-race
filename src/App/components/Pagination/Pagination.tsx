@@ -1,4 +1,5 @@
 import React from 'react';
+import './Pagination.css';
 
 type PaginationProps = {
   totalItems: number;
@@ -15,30 +16,32 @@ const Pagination: React.FC<PaginationProps> = ({
 }) => {
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-  //   if (totalPages === 1) return null;
+  // if (totalPages <= 1) return null;
+
+  const goPrev = () => {
+    if (currentPage > 1) onPageChange(currentPage - 1);
+  };
+
+  const goNext = () => {
+    if (currentPage < totalPages) onPageChange(currentPage + 1);
+  };
 
   return (
-    <div style={{ display: 'flex', gap: '8px' }}>
-      {Array.from({ length: totalPages }).map((_, index) => {
-        const page = index + 1;
-        return (
-          <button
-            type="button"
-            key={page}
-            onClick={() => onPageChange(page)}
-            style={{
-              padding: '6px 12px',
-              border: '1px solid #ccc',
-              borderRadius: '6px',
-              backgroundColor: currentPage === page ? '#9382d3ff' : '#fff',
-              color: currentPage === page ? '#fff' : '#9382d3ff',
-              cursor: 'pointer',
-            }}
-          >
-            {page}
-          </button>
-        );
-      })}
+    <div className="container">
+      <button type="button" onClick={goPrev} disabled={currentPage === 1} className="button">
+        Prev
+      </button>
+
+      <span className="page">Page {currentPage}</span>
+
+      <button
+        type="button"
+        onClick={goNext}
+        disabled={currentPage === totalPages}
+        className="button"
+      >
+        Next
+      </button>
     </div>
   );
 };

@@ -1,0 +1,35 @@
+.container {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.page, .button {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 12px;
+  padding: 8px;
+  border: 2px solid;
+  background: transparent;
+  color: #fff;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  border-radius:6px;
+  border-color: #a64dff;
+  box-shadow:
+    0 0 4px #a64dff,
+    0 0 8px #a64dff;
+}
+
+.button {
+  cursor: pointer;
+}
+
+.button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  box-shadow: none;
+  border-color: #a64dff;
+  color: #a64dff;
+}
+
+

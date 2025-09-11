@@ -5,15 +5,27 @@ import './RoadComponent.css';
 type Props = {
   carColor?: string;
   name: string;
+  position?: number;
+  timeMs?: number;
   onPressSelect?: () => void;
   onPressRemove?: () => void;
+  onPressA?: () => void;
+  onPressB?: () => void;
+  disabledA?: boolean;
+  disabledB?: boolean;
 };
 
 const RoadComponent: React.FC<Props> = ({
   carColor = '#000',
   name,
+  position = 0,
+  timeMs = 0,
   onPressSelect,
   onPressRemove,
+  onPressA,
+  onPressB,
+  disabledA = false,
+  disabledB = true,
 }) => {
   return (
     <div className="lane">
@@ -26,7 +38,13 @@ const RoadComponent: React.FC<Props> = ({
             shape="rect"
             onPress={onPressSelect}
           />
-          <ButtonComponent label="A" color="yellow" shape="square" />
+          <ButtonComponent
+            label="A"
+            color="yellow"
+            shape="square"
+            onPress={onPressA}
+            disabled={disabledA}
+          />
         </div>
         <div className="buttongroup">
           <ButtonComponent
@@ -36,11 +54,23 @@ const RoadComponent: React.FC<Props> = ({
             shape="rect"
             onPress={onPressRemove}
           />
-          <ButtonComponent label="B" color="blue" shape="square" disabled />
+          <ButtonComponent
+            label="B"
+            color="blue"
+            shape="square"
+            onPress={onPressB}
+            disabled={disabledB}
+          />
         </div>
       </div>
 
-      <div className="car">
+      <div
+        className="car"
+        style={{
+          transform: `translateX(${position}px)`,
+          transition: `transform ${timeMs}ms linear`,
+        }}
+      >
         <CarTopIcon color={carColor} />
       </div>
       <div className="car-name">{name}</div>

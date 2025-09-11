@@ -1,0 +1,55 @@
+.table-container {
+  margin: 20px auto;
+  width: 100%;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #111;
+}
+
+.winners-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Orbitron', sans-serif;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.winners-table th,
+.winners-table td {
+  border-bottom: 1px solid #333;
+  padding: 10px;
+  text-align: center;
+}
+
+.winners-table th {
+  background: #222;
+  color: #ff66ff;
+  font-weight: bold;
+}
+
+.winners-table tr:nth-child(even) {
+  background: #1a1a1a;
+}
+
+.car-icon {
+  width: 40px;
+  height: 20px;
+  border-radius: 4px;
+  margin: auto;
+}
+
+.pagination-bar {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 16px;
+  color: #fff;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
