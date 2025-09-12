@@ -28,7 +28,10 @@ const Header: React.FC = () => {
               color="blue"
               size="large"
               shape="rect"
-              onPress={() => navigarte('/garage')}
+              onPress={() => {
+                navigarte('/garage');
+                dispatch(setScreenStateAction(true));
+              }}
               // onPress={() => dispatch(setScreenStateAction(true))}
             />
             <ButtonComponent
@@ -36,7 +39,10 @@ const Header: React.FC = () => {
               color="pink"
               size="large"
               shape="rect"
-              onPress={() => navigarte('/winners')}
+              onPress={() => {
+                navigarte('/winners');
+                dispatch(setScreenStateAction(false));
+              }}
               // onPress={() => dispatch(setScreenStateAction(false))}
             />
           </div>

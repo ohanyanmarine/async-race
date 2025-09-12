@@ -1,31 +1,18 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { winnersSelector } from '../../store/selectors/WinnerSelector';
-import {
-  deleteWinnerAction,
-  getWinnerAction,
-  getWinnersAction,
-} from '../../store/actions/WinnerActions';
+import { getWinnersAction } from '../../store/actions/WinnerActions';
 import { carsSelector } from '../../store/selectors/GarageSelector';
 import { IWinner, IWinnerCar } from '../../store/reducers/type';
 
 const WinnersHook = () => {
   const dispatch = useDispatch();
+  const cars = useSelector(carsSelector);
   const winners = useSelector(winnersSelector);
 
   useEffect(() => {
     dispatch(getWinnersAction());
   }, [dispatch]);
-
-  const getWinner = (id: number) => {
-    dispatch(getWinnerAction(id));
-  };
-
-  const removeWinner = (id: number) => {
-    dispatch(deleteWinnerAction(id));
-  };
-
-  const cars = useSelector(carsSelector);
 
   const winnerCars: IWinnerCar[] = winners
     .map((winner: IWinner) => {
@@ -49,7 +36,15 @@ const WinnersHook = () => {
   const endIndex = startIndex + itemsPerPage;
   const currentItems = winnerCars.slice(startIndex, endIndex);
 
-  return { winners, winnerCars, currentItems, currentPage, setCurrentPage, itemsPerPage };
+  useEffect(() => {
+    const total = Math.ceil(cars.length / itemsPerPage);
+
+    if (currentPage > total && total > 0) {
+      setCurrentPage(total);
+    }
+  }, [cars, currentPage, itemsPerPage]);
+
+  return { winners, currentItems, currentPage, setCurrentPage, itemsPerPage };
 };
 
 export default WinnersHook;

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   carsSelector,
+  currentStateSelector,
   engineSelector,
   isScreenSetSelector,
   positionsSelector,
@@ -11,7 +12,11 @@ import {
   deleteCarAction,
   getCarAction,
   getCarsAction,
+  getCurrentStateAction,
   setCarPositionAction,
+  setCurrentPageAction,
+  setIsRaceStartAction,
+  setIsStartAction,
   startEngineAction,
   stopEngineAction,
   updateCarAction,
@@ -19,6 +24,7 @@ import {
 import { ICar } from '../../store/reducers/type';
 import {
   addWinnerAction,
+  deleteWinnerAction,
   getWinnersAction,
   setWinnerAction,
   updateWinnerAction,
@@ -31,8 +37,12 @@ const GarageHook = () => {
   const engine = useSelector(engineSelector);
   const winners = useSelector(winnersSelector);
   const selectedWinner = useSelector(selectedWinnerSelector);
+  const currentState = useSelector(currentStateSelector);
+  const stateCurrentPage = currentState.currentPage;
+  const stateIsRaceStart = currentState.isRaceStart;
+  const stateIsStart = currentState.isStart || {};
 
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 7;
 
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -47,11 +57,20 @@ const GarageHook = () => {
   const [selectedCarColor, setSelectedCarColor] = useState('#000000');
 
   useEffect(() => {
+    dispatch(getCurrentStateAction());
     dispatch(getCarsAction());
     dispatch(getWinnersAction());
   }, [dispatch]);
 
+  const handlePageChange = (page: number) => {
+    dispatch(setCurrentPageAction(page));
+  };
+
   const createCar = () => {
+    if (!carName.trim() || carName.length < 3 || carName.length > 15) {
+      alert('Car name must be 3–15 characters and not empty.');
+      return;
+    }
     dispatch(addCarAction({ name: carName, color: carColor }));
     setCarName('');
     setCarColor('#000000');
@@ -59,6 +78,10 @@ const GarageHook = () => {
 
   const updateCar = () => {
     if (selectedCarId === null) return;
+    if (!selectedCarName.trim() || selectedCarName.length < 3 || selectedCarName.length > 15) {
+      alert('Car name must be 3–15 characters and not empty.');
+      return;
+    }
     dispatch(
       updateCarAction(selectedCarId, {
         name: selectedCarName,
@@ -75,6 +98,7 @@ const GarageHook = () => {
 
   const removeCar = (id: number) => {
     dispatch(deleteCarAction(id));
+    dispatch(deleteWinnerAction(id));
   };
 
   const carBrands = [
@@ -88,6 +112,19 @@ const GarageHook = () => {
     'Chevrolet',
     'Nissan',
     'Porsche',
+  ];
+
+  const carModels = [
+    'Model S',
+    'Mustang',
+    'X5',
+    'A4',
+    'C-Class',
+    'Civic',
+    'Corolla',
+    'Camaro',
+    'Altima',
+    '911',
   ];
 
   const carColors = [
@@ -104,14 +141,15 @@ const GarageHook = () => {
   ];
 
   const generateRandomCars = () => {
-    for (let i = 0; i < 100; i += 1) {
-      const randomCarname = carBrands[Math.floor(Math.random() * carBrands.length)];
-      const randomCarColor = carColors[Math.floor(Math.random() * carColors.length)];
-      dispatch(addCarAction({ name: randomCarname, color: randomCarColor }));
+    const count = 100;
+    for (let i = 0; i < count; i++) {
+      const brand = carBrands[Math.floor(Math.random() * carBrands.length)];
+      const model = carModels[Math.floor(Math.random() * carModels.length)];
+      const color = carColors[Math.floor(Math.random() * carColors.length)];
+      dispatch(addCarAction({ name: `${brand} ${model}`, color }));
     }
   };
 
-  const [carDisabled, setCarDisabled] = useState<{ [id: number]: boolean }>({});
   const [positions, setPositions] = useState<Record<number, number>>({});
   const [winner, setWinner] = useState<ICar | null>(null);
   const [finish, setFinish] = useState<boolean>(false);
@@ -179,8 +217,7 @@ const GarageHook = () => {
 
   const stopEngine = (id: number, resetToStart = true) => {
     dispatch(stopEngineAction(id));
-    setCarDisabled((prev) => ({ ...prev, [id]: false }));
-
+    dispatch(setIsStartAction(id, false));
     if (animationRefs.current[id]) {
       cancelAnimationFrame(animationRefs.current[id]);
       delete animationRefs.current[id];
@@ -193,7 +230,7 @@ const GarageHook = () => {
   };
 
   const startEngine = (id: number) => {
-    setCarDisabled((prev) => ({ ...prev, [id]: true }));
+    dispatch(setIsStartAction(id, true));
     dispatch(startEngineAction(id));
   };
 
@@ -212,6 +249,7 @@ const GarageHook = () => {
   const startRace = () => {
     setWinner(null);
     setFinish(false);
+    dispatch(setIsRaceStartAction(true));
     cars.forEach((car) => startEngine(car.id));
   };
 
@@ -263,6 +301,7 @@ const GarageHook = () => {
     cars.forEach((car) => stopEngine(car.id, true));
     setFinish(false);
     setWinner(null);
+    dispatch(setIsRaceStartAction(false));
   };
   const carPositions = useSelector(positionsSelector);
   const screen = useSelector(isScreenSetSelector);
@@ -294,13 +333,16 @@ const GarageHook = () => {
     positions,
     startEngine,
     stopEngine,
-    carDisabled,
+    stateIsStart,
     startRace,
     getCar,
     resetRace,
     isModalOpen,
     setIsModalOpen,
     selectedWinner,
+    stateCurrentPage,
+    handlePageChange,
+    stateIsRaceStart,
   };
 };
 

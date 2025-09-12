@@ -7,6 +7,11 @@ const INIT_STATE: IGarageState = {
   selectedCar: null,
   isScreenSet: true,
   positions: {},
+  currentState: {
+    currentPage: 1,
+    isRaceStart: false,
+    isStart: {},
+  },
 };
 
 const garageReducer = (state: IGarageState | undefined, action: IActionType): IGarageState => {
@@ -44,6 +49,30 @@ const garageReducer = (state: IGarageState | undefined, action: IActionType): IG
         positions: {
           ...state.positions,
           [action.payload.carId]: action.payload.position,
+        },
+      };
+    case GarageTypes.SET_CURRENT_PAGE:
+      return {
+        ...state,
+        currentState: {
+          ...state.currentState,
+          currentPage: action.payload,
+        },
+      };
+    case GarageTypes.SET_IS_RACE_START:
+      return {
+        ...state,
+        currentState: {
+          ...state.currentState,
+          isRaceStart: action.payload,
+        },
+      };
+    case GarageTypes.SET_IS_START:
+      return {
+        ...state,
+        currentState: {
+          ...state.currentState,
+          isStart: { ...state.currentState.isStart, [action.payload.id]: action.payload.value },
         },
       };
 

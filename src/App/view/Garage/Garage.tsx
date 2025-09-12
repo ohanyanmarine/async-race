@@ -11,8 +11,6 @@ import './Garage.css';
 const Garage: React.FC = () => {
   const {
     cars,
-    currentPage,
-    setCurrentPage,
     itemsPerPage,
     currentItems,
     carName,
@@ -31,13 +29,16 @@ const Garage: React.FC = () => {
     positions,
     startEngine,
     stopEngine,
-    carDisabled,
     startRace,
     getCar,
     resetRace,
     isModalOpen,
     setIsModalOpen,
     selectedWinner,
+    stateCurrentPage,
+    handlePageChange,
+    stateIsRaceStart,
+    stateIsStart,
   } = GarageHook();
   return (
     <div>
@@ -49,6 +50,7 @@ const Garage: React.FC = () => {
             size="medium"
             shape="rect"
             onPress={startRace}
+            disabled={stateIsRaceStart}
           />
           <ButtonComponent
             label="Reset"
@@ -56,6 +58,7 @@ const Garage: React.FC = () => {
             size="medium"
             shape="rect"
             onPress={resetRace}
+            disabled={!stateIsRaceStart}
           />
         </div>
         <div className="inputs">
@@ -117,8 +120,8 @@ const Garage: React.FC = () => {
                   onPressRemove={() => removeCar(item.id)}
                   onPressA={() => startEngine(item.id)}
                   onPressB={() => stopEngine(item.id)}
-                  disabledA={carDisabled[item.id] ?? false}
-                  disabledB={!(carDisabled[item.id] ?? false)}
+                  disabledA={stateIsStart[item.id] ?? false}
+                  disabledB={!(stateIsStart[item.id] ?? false)}
                 />
               ))}
             </div>
@@ -131,8 +134,8 @@ const Garage: React.FC = () => {
               <Pagination
                 totalItems={cars.length}
                 itemsPerPage={itemsPerPage}
-                currentPage={currentPage}
-                onPageChange={setCurrentPage}
+                currentPage={stateCurrentPage}
+                onPageChange={handlePageChange}
               />
             </div>
           </div>

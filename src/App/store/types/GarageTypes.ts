@@ -13,6 +13,10 @@ export const GarageTypes = {
   SET_SCREEN_STATE: '@GarageTypes/SET_SCREEN_STATE',
   GET_SCREEN_STATE: '@GarageTypes/GET_SCREEN_STATE',
   SET_CAR_POSITION: '@GarageTypes/SET_CAR_POSITION',
+  GET_CURRENT_STATE: '@GarageTypes/GET_CURRENT_STATE',
+  SET_CURRENT_PAGE: '@GarageTypes/SET_CURRENT_PAGE',
+  SET_IS_RACE_START: '@GarageTypes/SET_IS_RACE_START',
+  SET_IS_START: '@GarageTypes/SET_IS_START',
 } as const;
 
 export type GarageActionKeys = keyof typeof GarageTypes;

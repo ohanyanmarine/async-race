@@ -5,8 +5,7 @@ import WinnersHook from './WinnersHook';
 import './Winners.css';
 
 const Winners: React.FC = () => {
-  const { winners, winnerCars, currentPage, setCurrentPage, itemsPerPage, currentItems } =
-    WinnersHook();
+  const { winners, currentPage, setCurrentPage, itemsPerPage, currentItems } = WinnersHook();
   return (
     <div>
       <h1>WINNERS</h1>

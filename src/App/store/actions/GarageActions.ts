@@ -68,3 +68,22 @@ export const setCarPositionAction = (carId: number, position: number) => ({
   type: GarageTypes.SET_CAR_POSITION,
   payload: { carId, position },
 });
+
+export const setCurrentPageAction = (currentPage: number) => ({
+  type: GarageTypes.SET_CURRENT_PAGE,
+  payload: currentPage,
+});
+
+export const setIsRaceStartAction = (isRaceStart: boolean) => ({
+  type: GarageTypes.SET_IS_RACE_START,
+  payload: isRaceStart,
+});
+
+export const setIsStartAction = (id: number, value: boolean) => ({
+  type: GarageTypes.SET_IS_START,
+  payload: { id, value },
+});
+
+export const getCurrentStateAction = () => ({
+  type: GarageTypes.GET_CURRENT_STATE,
+});

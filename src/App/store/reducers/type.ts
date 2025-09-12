@@ -1,19 +1,25 @@
-export type IActionType = {
+export interface IActionType {
   type: string;
   payload?: any;
-};
+}
 
-export type ICar = {
+export interface ICar {
   id: number;
   name: string;
   color: string;
   position?: number;
-};
+}
 
 export interface IEngineState {
   status: 'started' | 'stopped' | 'drive';
   velocity: number;
   distance: number;
+}
+
+export interface ICurrentState {
+  currentPage: number;
+  isRaceStart?: boolean;
+  isStart?: { [id: number]: boolean };
 }
 
 export interface IGarageState {
@@ -22,6 +28,7 @@ export interface IGarageState {
   selectedCar: ICar | null;
   isScreenSet: boolean;
   positions?: Record<number, number>;
+  currentState: ICurrentState;
 }
 
 export interface IWinner {
@@ -35,10 +42,10 @@ export interface IWinnerState {
   selectedWinner: IWinnerCar | null;
 }
 
-export type IWinnerCar = {
+export interface IWinnerCar {
   id: number;
   name: string;
   wins: number;
   bestTime: number;
   color: string;
-};
+}
