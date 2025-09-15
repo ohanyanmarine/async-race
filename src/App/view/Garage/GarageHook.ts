@@ -42,10 +42,9 @@ const GarageHook = () => {
   const stateIsRaceStart = currentState.isRaceStart;
   const stateIsStart = currentState.isStart || {};
 
-  const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 7;
 
-  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfLastItem = stateCurrentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = cars.slice(indexOfFirstItem, indexOfLastItem);
 
@@ -57,8 +56,11 @@ const GarageHook = () => {
   const [selectedCarColor, setSelectedCarColor] = useState('#000000');
 
   useEffect(() => {
-    dispatch(getCurrentStateAction());
     dispatch(getCarsAction());
+  }, []);
+
+  useEffect(() => {
+    dispatch(getCurrentStateAction());
     dispatch(getWinnersAction());
   }, [dispatch]);
 
@@ -99,6 +101,12 @@ const GarageHook = () => {
   const removeCar = (id: number) => {
     dispatch(deleteCarAction(id));
     dispatch(deleteWinnerAction(id));
+    const totalItemsAfter = cars.length - 1;
+    const totalPages = Math.ceil(totalItemsAfter / itemsPerPage);
+
+    if (stateCurrentPage > totalPages) {
+      dispatch(setCurrentPageAction(totalPages || 1));
+    }
   };
 
   const carBrands = [
@@ -153,8 +161,7 @@ const GarageHook = () => {
   const [positions, setPositions] = useState<Record<number, number>>({});
   const [finish, setFinish] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  // const [carDisabled, setCarDisabled] = useState<{ [id: number]: boolean }>({});
-  // const [carDisabled, setCarDisabled] = useState<boolean>(false);
+  const [activeCars, setActiveCars] = useState<number[]>([]);
 
   const finishLine = window.innerWidth * 0.65;
 
@@ -167,15 +174,13 @@ const GarageHook = () => {
 
   const stopEngine = (id: number, resetToStart: boolean) => {
     dispatch(stopEngineAction(id));
-    // setCarDisabled((prev) => ({ ...prev, [id]: false }));
-    // setCarDisabled(false);
     if (resetToStart) {
+      setActiveCars((prev) => prev.filter((cid) => cid !== id));
       dispatch(setIsStartAction(id, false));
       if (animationRefs.current[id]) {
         cancelAnimationFrame(animationRefs.current[id]);
         delete animationRefs.current[id];
       }
-      // const finalPos = resetToStart ? 0 : (positions[id] ?? 0);
       const finalPos = 0;
       setPositions((prev) => ({ ...prev, [id]: finalPos }));
       dispatch(setCarPositionAction(id, finalPos));
@@ -208,17 +213,11 @@ const GarageHook = () => {
         if (start >= finishLine) {
           start = finishLine;
           setPositions((prev) => ({ ...prev, [id]: start }));
-          if (!finish) {
+          if (!finish && activeCars.length > 1) {
             setFinish(true);
-            // const car = cars.find((c) => c.id === id);
-            // if (car) {
-            //   setWinner(car);
             setIsModalOpen(true);
-            // }
           }
           stopEngine(id, false);
-          // cancelAnimationFrame(animationRefs.current[id]);
-          // delete animationRefs.current[id];
           return;
         }
         dispatch(setCarPositionAction(id, start));
@@ -234,9 +233,10 @@ const GarageHook = () => {
   );
 
   const startEngine = (id: number) => {
-    // setCarDisabled(true);
     dispatch(setIsStartAction(id, true));
     dispatch(startEngineAction(id));
+    dispatch(setIsRaceStartAction(true));
+    setActiveCars((prev) => [...prev, id]);
   };
 
   useEffect(() => {
@@ -253,7 +253,6 @@ const GarageHook = () => {
 
   const startRace = () => {
     setFinish(false);
-    dispatch(setIsRaceStartAction(true));
     cars.forEach((car) => startEngine(car.id));
   };
 
@@ -317,8 +316,6 @@ const GarageHook = () => {
 
   return {
     cars,
-    currentPage,
-    setCurrentPage,
     itemsPerPage,
     currentItems,
     carName,
@@ -347,7 +344,6 @@ const GarageHook = () => {
     stateCurrentPage,
     handlePageChange,
     stateIsRaceStart,
-    // carDisabled,
   };
 };
 

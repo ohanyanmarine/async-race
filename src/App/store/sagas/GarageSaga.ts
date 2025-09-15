@@ -1,11 +1,6 @@
 import { takeEvery, call, put } from 'redux-saga/effects';
 import { GarageTypes } from '../types/GarageTypes';
-import {
-  driveEngineAction,
-  setCarAction,
-  setCarsAction,
-  setEngineStateAction,
-} from '../actions/GarageActions';
+import { setCarAction, setCarsAction, setEngineStateAction } from '../actions/GarageActions';
 import {
   addCarRequest,
   deleteCarRequest,
@@ -14,7 +9,7 @@ import {
   switchEngineRequest,
   updateCarRequest,
 } from '../../services/routes/garage';
-import { IActionType, ICar, IEngineState } from '../reducers/type';
+import { IActionType, ICar } from '../reducers/type';
 
 function* getCars(): Generator {
   try {
@@ -39,7 +34,7 @@ function* getCar(action: IActionType): Generator {
 
 function* addCar(action: { type: string; payload: { name: string; color: string } }) {
   try {
-    const newCar: ICar = yield call(addCarRequest, action.payload);
+    yield call(addCarRequest, action.payload);
     const carsResult: ICar[] = yield call(getCarsRequest);
     yield put(setCarsAction(carsResult ?? []));
   } catch (error) {
@@ -49,7 +44,7 @@ function* addCar(action: { type: string; payload: { name: string; color: string 
 
 function* updateCar(action: IActionType) {
   try {
-    const updatedCar: ICar = yield call(updateCarRequest, action.payload.id, action.payload.data);
+    yield call(updateCarRequest, action.payload.id, action.payload.data);
     const carsResult: ICar[] = yield call(getCarsRequest);
     yield put(setCarsAction(carsResult ?? []));
   } catch (error) {
@@ -71,7 +66,6 @@ function* deleteCar(action: IActionType): Generator {
 function* startEngine(action: { type: string; payload: { id: number } }) {
   const { id } = action.payload;
   try {
-    // 1. start engine
     const { velocity, distance } = yield call(switchEngineRequest, id, 'started');
 
     yield put(
@@ -82,10 +76,8 @@ function* startEngine(action: { type: string; payload: { id: number } }) {
       }),
     );
 
-    // 2. request drive
     yield call(switchEngineRequest, id, 'drive');
 
-    // 3. update state to drive
     yield put(
       setEngineStateAction(id, {
         status: 'drive',
@@ -118,7 +110,6 @@ function* driveEngine(action: { type: string; payload: { id: number } }) {
     );
   } catch (error) {
     console.error('Saga error in driveEngine:', error);
-    // stop animation if API failed
     yield put(
       setEngineStateAction(id, {
         status: 'stopped',

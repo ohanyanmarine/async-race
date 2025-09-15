@@ -53,3 +53,22 @@
   align-items: center;
   gap: 8px;
 }
+
+th .sortable {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+th .arrows {
+  display: flex;
+  margin-left: 6px;
+  gap: 8px;
+}
+
+th button {
+  background: transparent;
+  color: #ff66ff;
+  cursor: pointer;
+}

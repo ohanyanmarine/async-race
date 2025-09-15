@@ -39,7 +39,6 @@ const Garage: React.FC = () => {
     handlePageChange,
     stateIsRaceStart,
     stateIsStart,
-    // carDisabled,
   } = GarageHook();
   return (
     <div>

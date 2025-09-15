@@ -5,7 +5,8 @@ import WinnersHook from './WinnersHook';
 import './Winners.css';
 
 const Winners: React.FC = () => {
-  const { winners, currentPage, setCurrentPage, itemsPerPage, currentItems } = WinnersHook();
+  const { winners, currentPage, setCurrentPage, itemsPerPage, currentItems, handleSort } =
+    WinnersHook();
   return (
     <div>
       <h1>WINNERS</h1>
@@ -16,8 +17,32 @@ const Winners: React.FC = () => {
               <th>No</th>
               <th>CAR</th>
               <th>NAME</th>
-              <th>WINS</th>
-              <th>BEST TIME (SECONDS)</th>
+              <th>
+                <div className="sortable">
+                  <span>WINS</span>
+                  <div className="arrows">
+                    <button type="button" onClick={() => handleSort('wins')}>
+                      ↑
+                    </button>
+                    <button type="button" onClick={() => handleSort('wins')}>
+                      ↓
+                    </button>
+                  </div>
+                </div>
+              </th>
+              <th>
+                <div className="sortable">
+                  <span>BEST TIME (SECONDS)</span>
+                  <div className="arrows">
+                    <button type="button" onClick={() => handleSort('time')}>
+                      ↑
+                    </button>
+                    <button type="button" onClick={() => handleSort('time')}>
+                      ↓
+                    </button>
+                  </div>
+                </div>
+              </th>
             </tr>
           </thead>
           <tbody>

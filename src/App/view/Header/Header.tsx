@@ -5,8 +5,6 @@ import { getScreenStateAction, setScreenStateAction } from '../../store/actions/
 import ButtonComponent from '../../components/ButtonComponent/ButtonComponent';
 import { isScreenSetSelector } from '../../store/selectors/GarageSelector';
 import logo from '../../assets/logo2.png';
-// import Garage from '../Garage/Garage';
-// import Winners from '../Winners/Winners';
 import './Header.css';
 
 const Header: React.FC = () => {
@@ -19,38 +17,33 @@ const Header: React.FC = () => {
   }, [isScreen]);
 
   return (
-    <>
-      <div className="content">
-        <div className="header">
-          <div className="buttonGroup">
-            <ButtonComponent
-              label="Garage"
-              color="blue"
-              size="large"
-              shape="rect"
-              onPress={() => {
-                navigarte('/garage');
-                dispatch(setScreenStateAction(true));
-              }}
-              // onPress={() => dispatch(setScreenStateAction(true))}
-            />
-            <ButtonComponent
-              label="Winners"
-              color="pink"
-              size="large"
-              shape="rect"
-              onPress={() => {
-                navigarte('/winners');
-                dispatch(setScreenStateAction(false));
-              }}
-              // onPress={() => dispatch(setScreenStateAction(false))}
-            />
-          </div>
-          <img src={logo} alt="logo2" className="headerImage" />
+    <div className="content">
+      <div className="header">
+        <div className="buttonGroup">
+          <ButtonComponent
+            label="Garage"
+            color="blue"
+            size="large"
+            shape="rect"
+            onPress={() => {
+              navigarte('/garage');
+              dispatch(setScreenStateAction(true));
+            }}
+          />
+          <ButtonComponent
+            label="Winners"
+            color="pink"
+            size="large"
+            shape="rect"
+            onPress={() => {
+              navigarte('/winners');
+              dispatch(setScreenStateAction(false));
+            }}
+          />
         </div>
+        <img src={logo} alt="logo2" className="headerImage" />
       </div>
-      {/* {isScreen ? <Garage /> : <Winners />} */}
-    </>
+    </div>
   );
 };
 export default Header;

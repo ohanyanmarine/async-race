@@ -33,7 +33,7 @@ function* getWinner(action: IActionType): Generator {
 function* addWinner(action: { type: string; payload: { id: number; wins: number; time: number } }) {
   try {
     console.log('action.payload in Saga ', action.payload);
-    const newWinner: IWinner = yield call(addWinnerRequest, action.payload);
+    yield call(addWinnerRequest, action.payload);
     const winnersResult: IWinner[] = yield call(getWinnersRequest);
     yield put(setWinnersAction(winnersResult ?? []));
   } catch (error) {
@@ -46,7 +46,7 @@ function* updateWinner(action: {
   payload: { id: number; wins: number; time: number };
 }) {
   try {
-    const updatedWinner: IWinner = yield call(updateWinnerRequest, action.payload);
+    yield call(updateWinnerRequest, action.payload);
     const winnersResult: IWinner[] = yield call(getWinnersRequest);
     yield put(setWinnersAction(winnersResult ?? []));
   } catch (error) {
