@@ -8,8 +8,6 @@ export const engineSelector = (state: RootState): Record<number, IEngineState> =
 
 export const selectedCarSelector = (state: RootState): ICar | null => state.garage.selectedCar;
 
-export const isScreenSetSelector = (state: RootState): boolean => state.garage.isScreenSet;
-
 export const positionsSelector = (state: RootState): Record<number, number> | undefined =>
   state.garage.positions;
 

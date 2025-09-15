@@ -32,7 +32,6 @@ function* getWinner(action: IActionType): Generator {
 
 function* addWinner(action: { type: string; payload: { id: number; wins: number; time: number } }) {
   try {
-    console.log('action.payload in Saga ', action.payload);
     yield call(addWinnerRequest, action.payload);
     const winnersResult: IWinner[] = yield call(getWinnersRequest);
     yield put(setWinnersAction(winnersResult ?? []));

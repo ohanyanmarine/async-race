@@ -26,7 +26,6 @@ export interface IGarageState {
   cars: ICar[];
   engines: Record<number, IEngineState>;
   selectedCar: ICar | null;
-  isScreenSet: boolean;
   positions?: Record<number, number>;
   currentState: ICurrentState;
 }

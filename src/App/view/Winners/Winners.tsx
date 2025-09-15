@@ -21,10 +21,10 @@ const Winners: React.FC = () => {
                 <div className="sortable">
                   <span>WINS</span>
                   <div className="arrows">
-                    <button type="button" onClick={() => handleSort('wins')}>
+                    <button type="button" onClick={() => handleSort('wins', 'asc')}>
                       ↑
                     </button>
-                    <button type="button" onClick={() => handleSort('wins')}>
+                    <button type="button" onClick={() => handleSort('wins', 'desc')}>
                       ↓
                     </button>
                   </div>
@@ -34,10 +34,10 @@ const Winners: React.FC = () => {
                 <div className="sortable">
                   <span>BEST TIME (SECONDS)</span>
                   <div className="arrows">
-                    <button type="button" onClick={() => handleSort('time')}>
+                    <button type="button" onClick={() => handleSort('time', 'asc')}>
                       ↑
                     </button>
-                    <button type="button" onClick={() => handleSort('time')}>
+                    <button type="button" onClick={() => handleSort('time', 'desc')}>
                       ↓
                     </button>
                   </div>

@@ -26,7 +26,6 @@ import {
   carsSelector,
   currentStateSelector,
   engineSelector,
-  isScreenSetSelector,
   positionsSelector,
 } from '../../store/selectors/GarageSelector';
 import { selectedWinnerSelector, winnersSelector } from '../../store/selectors/WinnerSelector';
@@ -167,6 +166,7 @@ const GarageHook = () => {
 
   const animationRefs = useRef<{ [key: number]: number }>({});
   const engineRef = useRef(engine);
+  const modalShownRef = useRef(false);
 
   useEffect(() => {
     engineRef.current = engine;
@@ -177,10 +177,6 @@ const GarageHook = () => {
     if (resetToStart) {
       setActiveCars((prev) => prev.filter((cid) => cid !== id));
       dispatch(setIsStartAction(id, false));
-      if (animationRefs.current[id]) {
-        cancelAnimationFrame(animationRefs.current[id]);
-        delete animationRefs.current[id];
-      }
       const finalPos = 0;
       setPositions((prev) => ({ ...prev, [id]: finalPos }));
       dispatch(setCarPositionAction(id, finalPos));
@@ -213,7 +209,8 @@ const GarageHook = () => {
         if (start >= finishLine) {
           start = finishLine;
           setPositions((prev) => ({ ...prev, [id]: start }));
-          if (!finish && activeCars.length > 1) {
+          if (!modalShownRef.current && activeCars.length > 1) {
+            modalShownRef.current = true;
             setFinish(true);
             setIsModalOpen(true);
           }
@@ -252,17 +249,13 @@ const GarageHook = () => {
   }, [engine]);
 
   const startRace = () => {
+    modalShownRef.current = false;
     setFinish(false);
     cars.forEach((car) => startEngine(car.id));
   };
 
   useEffect(() => {
     if (finish) {
-      cars.forEach((car) => {
-        if (positions[car.id] >= finishLine) {
-          stopEngine(car.id, false);
-        }
-      });
       const raceResults = cars
         .map((car) => {
           const engineState = engine[car.id];
@@ -307,12 +300,11 @@ const GarageHook = () => {
     dispatch(setIsRaceStartAction(false));
   };
   const carPositions = useSelector(positionsSelector);
-  const screen = useSelector(isScreenSetSelector);
 
   useEffect(() => {
     if (!carPositions) return;
     setPositions({ ...carPositions });
-  }, [screen]);
+  }, []);
 
   return {
     cars,

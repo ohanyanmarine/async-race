@@ -5,7 +5,6 @@ const INIT_STATE: IGarageState = {
   cars: [],
   engines: {},
   selectedCar: null,
-  isScreenSet: true,
   positions: {},
   currentState: {
     currentPage: 1,
@@ -37,11 +36,6 @@ const garageReducer = (state: IGarageState | undefined, action: IActionType): IG
       return {
         ...state,
         selectedCar: action.payload,
-      };
-    case GarageTypes.SET_SCREEN_STATE:
-      return {
-        ...state,
-        isScreenSet: action.payload,
       };
     case GarageTypes.SET_CAR_POSITION:
       return {

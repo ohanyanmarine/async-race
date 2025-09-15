@@ -43,11 +43,11 @@ const WinnersHook = () => {
       return sortDirection === 'asc' ? a.bestTime - b.bestTime : b.bestTime - a.bestTime;
     });
     return sorted;
-  }, [winnerCars, sortField, sortDirection]);
+  }, [sortField, sortDirection]);
 
-  const handleSort = (field: SortField) => {
+  const handleSort = (field: SortField, order: SortDirection) => {
     if (field === sortField) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+      setSortDirection(order);
     } else {
       setSortField(field);
       setSortDirection('asc');

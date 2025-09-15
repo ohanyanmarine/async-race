@@ -1,20 +1,11 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { getScreenStateAction, setScreenStateAction } from '../../store/actions/GarageActions';
 import ButtonComponent from '../../components/ButtonComponent/ButtonComponent';
-import { isScreenSetSelector } from '../../store/selectors/GarageSelector';
 import logo from '../../assets/logo2.png';
 import './Header.css';
 
 const Header: React.FC = () => {
   const navigarte = useNavigate();
-  const dispatch = useDispatch();
-  const isScreen = useSelector(isScreenSetSelector);
-
-  useEffect(() => {
-    dispatch(getScreenStateAction());
-  }, [isScreen]);
 
   return (
     <div className="content">
@@ -27,7 +18,6 @@ const Header: React.FC = () => {
             shape="rect"
             onPress={() => {
               navigarte('/garage');
-              dispatch(setScreenStateAction(true));
             }}
           />
           <ButtonComponent
@@ -37,7 +27,6 @@ const Header: React.FC = () => {
             shape="rect"
             onPress={() => {
               navigarte('/winners');
-              dispatch(setScreenStateAction(false));
             }}
           />
         </div>

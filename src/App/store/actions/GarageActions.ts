@@ -55,15 +55,6 @@ export const driveEngineAction = (id: number) => ({
   payload: { id },
 });
 
-export const setScreenStateAction = (isScreenSet: boolean) => ({
-  type: GarageTypes.SET_SCREEN_STATE,
-  payload: isScreenSet,
-});
-
-export const getScreenStateAction = () => ({
-  type: GarageTypes.GET_SCREEN_STATE,
-});
-
 export const setCarPositionAction = (carId: number, position: number) => ({
   type: GarageTypes.SET_CAR_POSITION,
   payload: { carId, position },

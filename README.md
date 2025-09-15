@@ -1,46 +1,31 @@
-# Getting Started with Create React App
+## Deployment
+🔗 https://ohanyanmarine.github.io/async-race
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Score - 370 points
 
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+- [x] Two Views (10 points)  
+- [x] Garage View Content (30 points)  
+- [x] Winners View Content (10 points)  
+- [x] Persistent State (30 points)  
+- [x] Car Creation And Editing Panel. CRUD Operations (20 points)  
+- [x] Color Selection (10 points)  
+- [x] Random Car Creation (20 points)  
+- [x] Car Management Buttons (10 points)  
+- [x] Pagination (10 points)  
+- [x] EXTRA POINTS (20 points):  
+  - Handle empty garage with user friendly message "No Cars" or something like this.  
+  - If you remove the last one car on the page, you should be moved on the previous page, to hide the empty one.  
+- [x] Display Winners (15 points)  
+- [x] Pagination for Winners (10 points)  
+- [x] Winners Table (15 points)  
+- [x] Sorting Functionality (10 points)  
+- [x] Start Engine Animation (20 points)  
+- [x] Stop Engine Animation (20 points)  
+- [ ] Responsive Animation (30 points)  
+- [x] Start Race Button (10 points)  
+- [x] Reset Race Button (15 points)  
+- [x] Winner Announcement (5 points)  
+- [x] Button States (20 points)  
+- [x] Actions during the race (50 points)  
+- [x] Prettier Setup (5 points)  
+- [x] ESLint Configuration (5 points)  

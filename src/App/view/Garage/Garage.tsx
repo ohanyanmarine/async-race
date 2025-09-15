@@ -41,9 +41,9 @@ const Garage: React.FC = () => {
     stateIsStart,
   } = GarageHook();
   return (
-    <div>
-      <div className="top-content">
-        <div>
+    <div className="main-content">
+      <div className="header">
+        <div className="inpurs">
           <ButtonComponent
             label="Race"
             color="green"
@@ -75,6 +75,7 @@ const Garage: React.FC = () => {
             size="medium"
             shape="rect"
             onPress={createCar}
+            disabled={stateIsRaceStart}
           />
         </div>
         <div className="inputs">
@@ -91,17 +92,17 @@ const Garage: React.FC = () => {
             size="medium"
             shape="rect"
             onPress={updateCar}
+            disabled={stateIsRaceStart}
           />
         </div>
-        <div>
-          <ButtonComponent
-            label="Generate cars"
-            color="green"
-            size="medium"
-            shape="rect"
-            onPress={generateRandomCars}
-          />
-        </div>
+        <ButtonComponent
+          label="Generate cars"
+          color="green"
+          size="medium"
+          shape="rect"
+          onPress={generateRandomCars}
+          disabled={stateIsRaceStart}
+        />
       </div>
       {cars.length !== 0 ? (
         <>
@@ -129,16 +130,18 @@ const Garage: React.FC = () => {
             <div className="start-line">START</div>
             <div className="finish-line">FINISH</div>
           </div>
-          <div className="pagination-bar">
-            <p className="no-cars">Garage ({cars.length})</p>
-            <div className="pagination">
-              <Pagination
-                totalItems={cars.length}
-                itemsPerPage={itemsPerPage}
-                currentPage={stateCurrentPage}
-                onPageChange={handlePageChange}
-                isRace={stateIsRaceStart}
-              />
+          <div className="footer">
+            <div className="pagination-bar">
+              <p className="no-cars">Garage ({cars.length})</p>
+              <div className="pagination">
+                <Pagination
+                  totalItems={cars.length}
+                  itemsPerPage={itemsPerPage}
+                  currentPage={stateCurrentPage}
+                  onPageChange={handlePageChange}
+                  isRace={stateIsRaceStart}
+                />
+              </div>
             </div>
           </div>
         </>
