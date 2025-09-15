@@ -28,6 +28,8 @@ module.exports = {
     'react/function-component-definition': 'off',
     'import/extensions': 'off',
     'no-plusplus': 'off',
+    "no-console": "off",
+    "no-alert": "off",
     'prettier/prettier': [
       'error',
       {

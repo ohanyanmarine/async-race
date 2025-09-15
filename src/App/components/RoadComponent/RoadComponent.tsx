@@ -1,5 +1,5 @@
-import ButtonComponent from '../ButtonComponent/ButtonComponent';
 import CarTopIcon from '../../assets/CarTopIcon';
+import ButtonComponent from '../ButtonComponent/ButtonComponent';
 import './RoadComponent.css';
 
 type Props = {
@@ -13,6 +13,7 @@ type Props = {
   onPressB?: () => void;
   disabledA?: boolean;
   disabledB?: boolean;
+  isRace?: boolean;
 };
 
 const RoadComponent: React.FC<Props> = ({
@@ -26,6 +27,7 @@ const RoadComponent: React.FC<Props> = ({
   onPressB,
   disabledA = false,
   disabledB = true,
+  isRace = false,
 }) => {
   return (
     <div className="lane">
@@ -37,6 +39,7 @@ const RoadComponent: React.FC<Props> = ({
             size="small"
             shape="rect"
             onPress={onPressSelect}
+            disabled={isRace}
           />
           <ButtonComponent
             label="A"
@@ -53,6 +56,7 @@ const RoadComponent: React.FC<Props> = ({
             size="small"
             shape="rect"
             onPress={onPressRemove}
+            disabled={isRace}
           />
           <ButtonComponent
             label="B"

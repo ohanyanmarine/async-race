@@ -6,6 +6,7 @@ type PaginationProps = {
   itemsPerPage: number;
   currentPage: number;
   onPageChange: (page: number) => void;
+  isRace?: boolean;
 };
 
 const Pagination: React.FC<PaginationProps> = ({
@@ -13,6 +14,7 @@ const Pagination: React.FC<PaginationProps> = ({
   itemsPerPage,
   currentPage,
   onPageChange,
+  isRace,
 }) => {
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
@@ -28,7 +30,12 @@ const Pagination: React.FC<PaginationProps> = ({
 
   return (
     <div className="container">
-      <button type="button" onClick={goPrev} disabled={currentPage === 1} className="button">
+      <button
+        type="button"
+        onClick={goPrev}
+        disabled={currentPage === 1 || isRace}
+        className="button"
+      >
         Prev
       </button>
 
@@ -37,7 +44,7 @@ const Pagination: React.FC<PaginationProps> = ({
       <button
         type="button"
         onClick={goNext}
-        disabled={currentPage === totalPages}
+        disabled={currentPage === totalPages || isRace}
         className="button"
       >
         Next

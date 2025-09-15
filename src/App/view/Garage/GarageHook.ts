@@ -1,13 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  carsSelector,
-  currentStateSelector,
-  engineSelector,
-  isScreenSetSelector,
-  positionsSelector,
-} from '../../store/selectors/GarageSelector';
-import {
   addCarAction,
   deleteCarAction,
   getCarAction,
@@ -21,7 +14,6 @@ import {
   stopEngineAction,
   updateCarAction,
 } from '../../store/actions/GarageActions';
-import { ICar } from '../../store/reducers/type';
 import {
   addWinnerAction,
   deleteWinnerAction,
@@ -29,6 +21,14 @@ import {
   setWinnerAction,
   updateWinnerAction,
 } from '../../store/actions/WinnerActions';
+import { ICar } from '../../store/reducers/type';
+import {
+  carsSelector,
+  currentStateSelector,
+  engineSelector,
+  isScreenSetSelector,
+  positionsSelector,
+} from '../../store/selectors/GarageSelector';
 import { selectedWinnerSelector, winnersSelector } from '../../store/selectors/WinnerSelector';
 
 const GarageHook = () => {
@@ -151,9 +151,10 @@ const GarageHook = () => {
   };
 
   const [positions, setPositions] = useState<Record<number, number>>({});
-  const [winner, setWinner] = useState<ICar | null>(null);
   const [finish, setFinish] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  // const [carDisabled, setCarDisabled] = useState<{ [id: number]: boolean }>({});
+  // const [carDisabled, setCarDisabled] = useState<boolean>(false);
 
   const finishLine = window.innerWidth * 0.65;
 
@@ -163,6 +164,23 @@ const GarageHook = () => {
   useEffect(() => {
     engineRef.current = engine;
   }, [engine]);
+
+  const stopEngine = (id: number, resetToStart: boolean) => {
+    dispatch(stopEngineAction(id));
+    // setCarDisabled((prev) => ({ ...prev, [id]: false }));
+    // setCarDisabled(false);
+    if (resetToStart) {
+      dispatch(setIsStartAction(id, false));
+      if (animationRefs.current[id]) {
+        cancelAnimationFrame(animationRefs.current[id]);
+        delete animationRefs.current[id];
+      }
+      // const finalPos = resetToStart ? 0 : (positions[id] ?? 0);
+      const finalPos = 0;
+      setPositions((prev) => ({ ...prev, [id]: finalPos }));
+      dispatch(setCarPositionAction(id, finalPos));
+    }
+  };
 
   const moveCar = useCallback(
     (id: number) => {
@@ -178,58 +196,45 @@ const GarageHook = () => {
         const { velocity, status } = carEngine;
 
         if (status === 'stopped') {
+          stopEngine(id, false);
           cancelAnimationFrame(animationRefs.current[id]);
           delete animationRefs.current[id];
           dispatch(setCarPositionAction(id, positions[id] ?? 0));
           return;
         }
 
-        start += velocity * 0.005;
+        start += velocity * 0.02;
 
         if (start >= finishLine) {
           start = finishLine;
           setPositions((prev) => ({ ...prev, [id]: start }));
           if (!finish) {
             setFinish(true);
-            const car = cars.find((c) => c.id === id);
-            if (car) {
-              setWinner(car);
-              setIsModalOpen(true);
-            }
+            // const car = cars.find((c) => c.id === id);
+            // if (car) {
+            //   setWinner(car);
+            setIsModalOpen(true);
+            // }
           }
-          cancelAnimationFrame(animationRefs.current[id]);
-          delete animationRefs.current[id];
-          dispatch(setCarPositionAction(id, start));
+          stopEngine(id, false);
+          // cancelAnimationFrame(animationRefs.current[id]);
+          // delete animationRefs.current[id];
           return;
         }
-
+        dispatch(setCarPositionAction(id, start));
         setPositions((prev) => ({ ...prev, [id]: start }));
         animationRefs.current[id] = requestAnimationFrame(animate);
       };
       if (animationRefs.current[id]) {
         cancelAnimationFrame(animationRefs.current[id]);
       }
-
       animationRefs.current[id] = requestAnimationFrame(animate);
     },
     [cars, positions, finish, dispatch],
   );
 
-  const stopEngine = (id: number, resetToStart = true) => {
-    dispatch(stopEngineAction(id));
-    dispatch(setIsStartAction(id, false));
-    if (animationRefs.current[id]) {
-      cancelAnimationFrame(animationRefs.current[id]);
-      delete animationRefs.current[id];
-    }
-
-    const finalPos = resetToStart ? 0 : (positions[id] ?? 0);
-
-    setPositions((prev) => ({ ...prev, [id]: finalPos }));
-    dispatch(setCarPositionAction(id, finalPos));
-  };
-
   const startEngine = (id: number) => {
+    // setCarDisabled(true);
     dispatch(setIsStartAction(id, true));
     dispatch(startEngineAction(id));
   };
@@ -239,26 +244,26 @@ const GarageHook = () => {
       const engineState = engine[car.id];
       if (engineState) {
         const { velocity, status } = engineState;
-        if (status === 'started' && velocity > 0 && !finish) {
+        if (status === 'started' && velocity > 0) {
           moveCar(car.id);
         }
       }
     });
-  }, [engine, finish]);
+  }, [engine]);
 
   const startRace = () => {
-    setWinner(null);
     setFinish(false);
     dispatch(setIsRaceStartAction(true));
     cars.forEach((car) => startEngine(car.id));
   };
 
   useEffect(() => {
-    if (winner) {
+    if (finish) {
       cars.forEach((car) => {
-        stopEngine(car.id, false);
+        if (positions[car.id] >= finishLine) {
+          stopEngine(car.id, false);
+        }
       });
-
       const raceResults = cars
         .map((car) => {
           const engineState = engine[car.id];
@@ -295,12 +300,11 @@ const GarageHook = () => {
         );
       }
     }
-  }, [winner]);
+  }, [finish]);
 
   const resetRace = () => {
     cars.forEach((car) => stopEngine(car.id, true));
     setFinish(false);
-    setWinner(null);
     dispatch(setIsRaceStartAction(false));
   };
   const carPositions = useSelector(positionsSelector);
@@ -343,6 +347,7 @@ const GarageHook = () => {
     stateCurrentPage,
     handlePageChange,
     stateIsRaceStart,
+    // carDisabled,
   };
 };
 

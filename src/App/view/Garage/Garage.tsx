@@ -1,12 +1,12 @@
 import React from 'react';
 import ButtonComponent from '../../components/ButtonComponent/ButtonComponent';
 import InputComponent from '../../components/InputComponent/InputComponent';
-import RoadComponent from '../../components/RoadComponent/RoadComponent';
 import Pagination from '../../components/Pagination/Pagination';
+import RoadComponent from '../../components/RoadComponent/RoadComponent';
 import WinnerModal from '../../components/WinnerModal/WinnerModal';
 import { ICar } from '../../store/reducers/type';
-import GarageHook from './GarageHook';
 import './Garage.css';
+import GarageHook from './GarageHook';
 
 const Garage: React.FC = () => {
   const {
@@ -39,6 +39,7 @@ const Garage: React.FC = () => {
     handlePageChange,
     stateIsRaceStart,
     stateIsStart,
+    // carDisabled,
   } = GarageHook();
   return (
     <div>
@@ -119,9 +120,10 @@ const Garage: React.FC = () => {
                   }}
                   onPressRemove={() => removeCar(item.id)}
                   onPressA={() => startEngine(item.id)}
-                  onPressB={() => stopEngine(item.id)}
-                  disabledA={stateIsStart[item.id] ?? false}
-                  disabledB={!(stateIsStart[item.id] ?? false)}
+                  onPressB={() => stopEngine(item.id, true)}
+                  disabledA={stateIsStart[item.id]}
+                  disabledB={!stateIsStart[item.id]}
+                  isRace={stateIsRaceStart}
                 />
               ))}
             </div>
@@ -136,6 +138,7 @@ const Garage: React.FC = () => {
                 itemsPerPage={itemsPerPage}
                 currentPage={stateCurrentPage}
                 onPageChange={handlePageChange}
+                isRace={stateIsRaceStart}
               />
             </div>
           </div>
