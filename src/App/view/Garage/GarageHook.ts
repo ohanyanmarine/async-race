@@ -21,7 +21,7 @@ import {
   setWinnerAction,
   updateWinnerAction,
 } from '../../store/actions/WinnerActions';
-import { ICar } from '../../store/reducers/type';
+import { ICar, IEngineState, IWinner } from '../../store/reducers/type';
 import {
   carsSelector,
   currentStateSelector,
@@ -29,6 +29,11 @@ import {
   positionsSelector,
 } from '../../store/selectors/GarageSelector';
 import { selectedWinnerSelector, winnersSelector } from '../../store/selectors/WinnerSelector';
+
+interface RaceResult {
+  car: ICar;
+  time: number;
+}
 
 const GarageHook = () => {
   const dispatch = useDispatch();
@@ -39,7 +44,7 @@ const GarageHook = () => {
   const currentState = useSelector(currentStateSelector);
   const stateCurrentPage = currentState.currentPage;
   const stateIsRaceStart = currentState.isRaceStart;
-  const stateIsStart = currentState.isStart || {};
+  const stateIsStart: Record<number, boolean> = currentState.isStart || {};
 
   const itemsPerPage = 7;
 
@@ -47,12 +52,12 @@ const GarageHook = () => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = cars.slice(indexOfFirstItem, indexOfLastItem);
 
-  const [carName, setCarName] = useState('');
-  const [carColor, setCarColor] = useState('#000000');
+  const [carName, setCarName] = useState<string>('');
+  const [carColor, setCarColor] = useState<string>('#000000');
 
   const [selectedCarId, setSelectedCarId] = useState<number | null>(null);
-  const [selectedCarName, setSelectedCarName] = useState('');
-  const [selectedCarColor, setSelectedCarColor] = useState('#000000');
+  const [selectedCarName, setSelectedCarName] = useState<string>('');
+  const [selectedCarColor, setSelectedCarColor] = useState<string>('#000000');
 
   useEffect(() => {
     dispatch(getCarsAction());
@@ -99,16 +104,19 @@ const GarageHook = () => {
 
   const removeCar = (id: number) => {
     dispatch(deleteCarAction(id));
-    dispatch(deleteWinnerAction(id));
-    const totalItemsAfter = cars.length - 1;
-    const totalPages = Math.ceil(totalItemsAfter / itemsPerPage);
+    const existingWinner = winners.find((w: IWinner) => w.id === id);
+    if (existingWinner) {
+      dispatch(deleteWinnerAction(id));
+      const totalItemsAfter = cars.length - 1;
+      const totalPages = Math.ceil(totalItemsAfter / itemsPerPage);
 
-    if (stateCurrentPage > totalPages) {
-      dispatch(setCurrentPageAction(totalPages || 1));
+      if (stateCurrentPage > totalPages) {
+        dispatch(setCurrentPageAction(totalPages || 1));
+      }
     }
   };
 
-  const carBrands = [
+  const carBrands: string[] = [
     'Tesla',
     'Ford',
     'BMW',
@@ -121,7 +129,7 @@ const GarageHook = () => {
     'Porsche',
   ];
 
-  const carModels = [
+  const carModels: string[] = [
     'Model S',
     'Mustang',
     'X5',
@@ -134,7 +142,7 @@ const GarageHook = () => {
     '911',
   ];
 
-  const carColors = [
+  const carColors: string[] = [
     'red',
     'blue',
     'green',
@@ -160,32 +168,35 @@ const GarageHook = () => {
   const [positions, setPositions] = useState<Record<number, number>>({});
   const [finish, setFinish] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [activeCars, setActiveCars] = useState<number[]>([]);
 
   const finishLine = window.innerWidth * 0.65;
 
-  const animationRefs = useRef<{ [key: number]: number }>({});
-  const engineRef = useRef(engine);
-  const modalShownRef = useRef(false);
+  const animationRefs = useRef<Record<number, number>>({});
+  const engineRef = useRef<Record<number, IEngineState>>(engine);
+  const modalShownRef = useRef<boolean>(false);
+  const raceStartedRef = useRef<boolean>(false);
 
   useEffect(() => {
     engineRef.current = engine;
   }, [engine]);
 
-  const stopEngine = (id: number, resetToStart: boolean) => {
-    dispatch(stopEngineAction(id));
-    if (resetToStart) {
-      setActiveCars((prev) => prev.filter((cid) => cid !== id));
-      dispatch(setIsStartAction(id, false));
-      const finalPos = 0;
-      setPositions((prev) => ({ ...prev, [id]: finalPos }));
-      dispatch(setCarPositionAction(id, finalPos));
-    }
-  };
+  const stopEngine = useCallback(
+    (id: number, resetToStart: boolean) => {
+      dispatch(stopEngineAction(id));
+      if (resetToStart) {
+        dispatch(setIsStartAction(id, false));
+        setPositions((prev) => ({ ...prev, [id]: 0 }));
+        dispatch(setCarPositionAction(id, 0));
+      } else {
+        dispatch(setIsStartAction(id, false));
+      }
+    },
+    [dispatch],
+  );
 
   const moveCar = useCallback(
     (id: number) => {
-      const carIndex = cars.findIndex((c) => c.id === id);
+      const carIndex = cars.findIndex((c: ICar) => c.id === id);
       if (carIndex === -1) return;
 
       let start = positions[id] || 0;
@@ -197,10 +208,8 @@ const GarageHook = () => {
         const { velocity, status } = carEngine;
 
         if (status === 'stopped') {
-          stopEngine(id, false);
           cancelAnimationFrame(animationRefs.current[id]);
           delete animationRefs.current[id];
-          dispatch(setCarPositionAction(id, positions[id] ?? 0));
           return;
         }
 
@@ -208,17 +217,21 @@ const GarageHook = () => {
 
         if (start >= finishLine) {
           start = finishLine;
+          dispatch(stopEngineAction(id));
           setPositions((prev) => ({ ...prev, [id]: start }));
-          if (!modalShownRef.current && activeCars.length > 1) {
+          dispatch(setCarPositionAction(id, start));
+          if (!modalShownRef.current && raceStartedRef.current) {
             modalShownRef.current = true;
             setFinish(true);
             setIsModalOpen(true);
           }
-          stopEngine(id, false);
+          cancelAnimationFrame(animationRefs.current[id]);
+          delete animationRefs.current[id];
           return;
         }
-        dispatch(setCarPositionAction(id, start));
+
         setPositions((prev) => ({ ...prev, [id]: start }));
+        dispatch(setCarPositionAction(id, start));
         animationRefs.current[id] = requestAnimationFrame(animate);
       };
       if (animationRefs.current[id]) {
@@ -226,38 +239,50 @@ const GarageHook = () => {
       }
       animationRefs.current[id] = requestAnimationFrame(animate);
     },
-    [cars, positions, finish, dispatch],
+    [cars, positions, dispatch],
   );
 
-  const startEngine = (id: number) => {
-    dispatch(setIsStartAction(id, true));
-    dispatch(startEngineAction(id));
-    dispatch(setIsRaceStartAction(true));
-    setActiveCars((prev) => [...prev, id]);
-  };
+  const startEngine = useCallback(
+    (id: number) => {
+      dispatch(setIsStartAction(id, true));
+      dispatch(startEngineAction(id));
+      dispatch(setIsRaceStartAction(true));
+    },
+    [dispatch],
+  );
 
   useEffect(() => {
-    cars.forEach((car) => {
-      const engineState = engine[car.id];
-      if (engineState) {
-        const { velocity, status } = engineState;
-        if (status === 'started' && velocity > 0) {
-          moveCar(car.id);
-        }
+    Object.entries(engine).forEach(([id, engineState]) => {
+      const carId = Number(id);
+      const { velocity, status } = engineState;
+
+      if (status === 'started' && velocity > 0 && !animationRefs.current[carId]) {
+        moveCar(carId);
       }
     });
-  }, [engine]);
+  }, [engine, moveCar]);
 
-  const startRace = () => {
+  const startRace = useCallback(() => {
     modalShownRef.current = false;
+    raceStartedRef.current = true;
     setFinish(false);
-    cars.forEach((car) => startEngine(car.id));
-  };
+
+    Object.values(animationRefs.current).forEach((animationId) => {
+      cancelAnimationFrame(animationId);
+    });
+    animationRefs.current = {};
+
+    cars.forEach((car: ICar) => {
+      if (!stateIsStart[car.id]) {
+        startEngine(car.id);
+      }
+    });
+  }, [cars, startEngine, stateIsStart]);
 
   useEffect(() => {
-    if (finish) {
-      const raceResults = cars
-        .map((car) => {
+    if (finish && raceStartedRef.current) {
+      const raceResults: RaceResult[] = cars
+        .map((car: ICar) => {
           const engineState = engine[car.id];
           if (!engineState || engineState.velocity <= 0) return null;
 
@@ -265,12 +290,12 @@ const GarageHook = () => {
           const time = parseFloat(timer.toFixed(2));
           return { car, time };
         })
-        .filter(Boolean) as { car: ICar; time: number }[];
+        .filter((result): result is RaceResult => result !== null);
 
       if (raceResults.length > 0) {
         const win = raceResults.reduce((min, r) => (r.time < min.time ? r : min));
 
-        const existingWinner = winners.find((w) => w.id === win.car.id);
+        const existingWinner = winners.find((w: IWinner) => w.id === win.car.id);
         let winCount = 1;
         let bestTime = win.time;
 
@@ -291,20 +316,35 @@ const GarageHook = () => {
           }),
         );
       }
+      raceStartedRef.current = false;
     }
-  }, [finish]);
+  }, [finish, cars, engine, winners, dispatch]);
 
-  const resetRace = () => {
-    cars.forEach((car) => stopEngine(car.id, true));
+  const resetRace = useCallback(() => {
+    raceStartedRef.current = false;
+    modalShownRef.current = false;
+
+    Object.values(animationRefs.current).forEach((animationId) => {
+      cancelAnimationFrame(animationId);
+    });
+    animationRefs.current = {};
+
+    cars.forEach((car: ICar) => {
+      dispatch(stopEngineAction(car.id));
+      setPositions((prev) => ({ ...prev, [car.id]: 0 }));
+      dispatch(setCarPositionAction(car.id, 0));
+      dispatch(setIsStartAction(car.id, false));
+    });
     setFinish(false);
     dispatch(setIsRaceStartAction(false));
-  };
+  }, [cars, dispatch]);
   const carPositions = useSelector(positionsSelector);
 
   useEffect(() => {
-    if (!carPositions) return;
-    setPositions({ ...carPositions });
-  }, []);
+    if (carPositions) {
+      setPositions({ ...carPositions });
+    }
+  }, [carPositions]);
 
   return {
     cars,

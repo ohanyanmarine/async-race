@@ -1,12 +1,13 @@
 import React from 'react';
 import CarTopIcon from '../../assets/CarTopIcon';
 import Pagination from '../../components/Pagination/Pagination';
-import WinnersHook from './WinnersHook';
+import useWinnersHook from './WinnersHook';
 import './Winners.css';
+import { IWinnerCar } from '../../store/reducers/type';
 
 const Winners: React.FC = () => {
   const { winners, currentPage, setCurrentPage, itemsPerPage, currentItems, handleSort } =
-    WinnersHook();
+    useWinnersHook();
   return (
     <div>
       <h1>WINNERS</h1>
@@ -46,7 +47,7 @@ const Winners: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {currentItems.map((winner) => {
+            {currentItems.map((winner: IWinnerCar) => {
               return (
                 <tr key={winner.id}>
                   <td>{winner.id}</td>

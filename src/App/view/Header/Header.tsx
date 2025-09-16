@@ -5,7 +5,7 @@ import logo from '../../assets/logo2.png';
 import './Header.css';
 
 const Header: React.FC = () => {
-  const navigarte = useNavigate();
+  const navigate = useNavigate();
 
   return (
     <div className="content">
@@ -17,7 +17,7 @@ const Header: React.FC = () => {
             size="large"
             shape="rect"
             onPress={() => {
-              navigarte('/garage');
+              navigate('/garage');
             }}
           />
           <ButtonComponent
@@ -26,7 +26,7 @@ const Header: React.FC = () => {
             size="large"
             shape="rect"
             onPress={() => {
-              navigarte('/winners');
+              navigate('/winners');
             }}
           />
         </div>

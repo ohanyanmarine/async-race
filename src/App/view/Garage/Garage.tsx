@@ -6,7 +6,7 @@ import RoadComponent from '../../components/RoadComponent/RoadComponent';
 import WinnerModal from '../../components/WinnerModal/WinnerModal';
 import { ICar } from '../../store/reducers/type';
 import './Garage.css';
-import GarageHook from './GarageHook';
+import useGarageHook from './GarageHook';
 
 const Garage: React.FC = () => {
   const {
@@ -39,7 +39,7 @@ const Garage: React.FC = () => {
     handlePageChange,
     stateIsRaceStart,
     stateIsStart,
-  } = GarageHook();
+  } = useGarageHook();
   return (
     <div className="main-content">
       <div className="header">
@@ -58,7 +58,6 @@ const Garage: React.FC = () => {
             size="medium"
             shape="rect"
             onPress={resetRace}
-            disabled={!stateIsRaceStart}
           />
         </div>
         <div className="inputs">

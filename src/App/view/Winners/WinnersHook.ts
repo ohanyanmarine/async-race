@@ -3,7 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { winnersSelector } from '../../store/selectors/WinnerSelector';
 import { getWinnersAction } from '../../store/actions/WinnerActions';
 import { carsSelector } from '../../store/selectors/GarageSelector';
-import { IWinner, IWinnerCar } from '../../store/reducers/type';
+import { IWinner, IWinnerCar, ICar } from '../../store/reducers/type';
+
+type SortField = 'wins' | 'time';
+type SortDirection = 'asc' | 'desc';
 
 const WinnersHook = () => {
   const dispatch = useDispatch();
@@ -16,7 +19,7 @@ const WinnersHook = () => {
 
   const winnerCars: IWinnerCar[] = winners
     .map((winner: IWinner) => {
-      const winnerCar = cars.find((car) => car.id === winner.id);
+      const winnerCar = cars.find((car: ICar) => car.id === winner.id);
       if (!winnerCar) return null;
 
       return {
@@ -27,23 +30,20 @@ const WinnersHook = () => {
         bestTime: winner.time,
       };
     })
-    .filter((wc): wc is IWinnerCar => wc !== null);
-
-  type SortField = 'wins' | 'time';
-  type SortDirection = 'asc' | 'desc';
+    .filter((wc: IWinnerCar | null): wc is IWinnerCar => wc !== null);
 
   const [sortField, setSortField] = useState<SortField>('wins');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
 
   const sortedWinners = useMemo(() => {
-    const sorted = [...winnerCars].sort((a, b) => {
+    const sorted = [...winnerCars].sort((a: IWinnerCar, b: IWinnerCar) => {
       if (sortField === 'wins') {
         return sortDirection === 'asc' ? a.wins - b.wins : b.wins - a.wins;
       }
       return sortDirection === 'asc' ? a.bestTime - b.bestTime : b.bestTime - a.bestTime;
     });
     return sorted;
-  }, [sortField, sortDirection]);
+  }, [winnerCars, sortField, sortDirection]);
 
   const handleSort = (field: SortField, order: SortDirection) => {
     if (field === sortField) {
@@ -54,7 +54,7 @@ const WinnersHook = () => {
     }
   };
 
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 10;
 
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -62,12 +62,12 @@ const WinnersHook = () => {
   const currentItems = sortedWinners.slice(startIndex, endIndex);
 
   useEffect(() => {
-    const total = Math.ceil(cars.length / itemsPerPage);
+    const totalPages = Math.ceil(winnerCars.length / itemsPerPage);
 
-    if (currentPage > total && total > 0) {
-      setCurrentPage(total);
+    if (currentPage > totalPages && totalPages > 0) {
+      setCurrentPage(totalPages);
     }
-  }, [cars, currentPage, itemsPerPage]);
+  }, [winnerCars, currentPage, itemsPerPage]);
 
   return {
     winners,
