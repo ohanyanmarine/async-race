@@ -61,11 +61,11 @@ const GarageHook = () => {
 
   useEffect(() => {
     dispatch(getCarsAction());
+    dispatch(getWinnersAction());
   }, []);
 
   useEffect(() => {
     dispatch(getCurrentStateAction());
-    dispatch(getWinnersAction());
   }, [dispatch]);
 
   const handlePageChange = (page: number) => {
@@ -107,12 +107,12 @@ const GarageHook = () => {
     const existingWinner = winners.find((w: IWinner) => w.id === id);
     if (existingWinner) {
       dispatch(deleteWinnerAction(id));
-      const totalItemsAfter = cars.length - 1;
-      const totalPages = Math.ceil(totalItemsAfter / itemsPerPage);
+    }
+    const totalItemsAfter = cars.length - 1;
+    const totalPages = Math.ceil(totalItemsAfter / itemsPerPage);
 
-      if (stateCurrentPage > totalPages) {
-        dispatch(setCurrentPageAction(totalPages || 1));
-      }
+    if (stateCurrentPage > totalPages) {
+      dispatch(setCurrentPageAction(totalPages || 1));
     }
   };
 
