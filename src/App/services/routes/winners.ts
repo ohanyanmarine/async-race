@@ -40,5 +40,5 @@ export const updateWinnerRequest = async (winner: {
 };
 
 export const deleteWinnerRequest = async (id: number): Promise<void> => {
-  await api.delete(`/winner/${id}`);
+  await api.delete(`/winners/${id}`);
 };

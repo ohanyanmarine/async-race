@@ -39,6 +39,9 @@ const Garage: React.FC = () => {
     handlePageChange,
     stateIsRaceStart,
     stateIsStart,
+    finishLineRef,
+    raceTrackRef,
+    startLineRef,
   } = useGarageHook();
   return (
     <div className="main-content">
@@ -105,7 +108,7 @@ const Garage: React.FC = () => {
       </div>
       {cars.length !== 0 ? (
         <>
-          <div className="race-track">
+          <div ref={raceTrackRef} className="race-track">
             <div className="lanes">
               {currentItems.map((item: ICar) => (
                 <RoadComponent
@@ -126,8 +129,12 @@ const Garage: React.FC = () => {
                 />
               ))}
             </div>
-            <div className="start-line">START</div>
-            <div className="finish-line">FINISH</div>
+            <div ref={startLineRef} className="start-line">
+              START
+            </div>
+            <div ref={finishLineRef} className="finish-line">
+              FINISH
+            </div>
           </div>
           <div className="footer">
             <div className="pagination-bar">
@@ -138,7 +145,7 @@ const Garage: React.FC = () => {
                   itemsPerPage={itemsPerPage}
                   currentPage={stateCurrentPage}
                   onPageChange={handlePageChange}
-                  isRace={stateIsRaceStart}
+                  // isRace={stateIsRaceStart}
                 />
               </div>
             </div>

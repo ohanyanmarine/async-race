@@ -47,6 +47,7 @@ const RoadComponent: React.FC<Props> = ({
             shape="square"
             onPress={onPressA}
             disabled={disabledA}
+            aria-label="Start Car"
           />
         </div>
         <div className="buttongroup">
@@ -64,6 +65,7 @@ const RoadComponent: React.FC<Props> = ({
             shape="square"
             onPress={onPressB}
             disabled={disabledB}
+            aria-label="Stop Car"
           />
         </div>
       </div>
@@ -71,7 +73,7 @@ const RoadComponent: React.FC<Props> = ({
       <div
         className="car"
         style={{
-          transform: `translateX(${position}px)`,
+          transform: `translate3d(${position}px, 0, 0)`,
           transition: `transform ${timeMs}ms linear`,
         }}
       >

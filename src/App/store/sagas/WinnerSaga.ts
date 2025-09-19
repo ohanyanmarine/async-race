@@ -1,5 +1,5 @@
 import { takeEvery, call, put } from 'redux-saga/effects';
-import { IActionType, IWinner, IWinnerCar } from '../reducers/type';
+import { IWinner, IWinnerCar } from '../reducers/type';
 import {
   addWinnerRequest,
   deleteWinnerRequest,
@@ -8,7 +8,7 @@ import {
   updateWinnerRequest,
 } from '../../services/routes/winners';
 import { setWinnerAction, setWinnersAction } from '../actions/WinnerActions';
-import { WinnerTypes } from '../types/WinnerTypes';
+import WinnerTypes from '../types/WinnerTypes';
 
 function* getWinners(): Generator {
   try {
@@ -20,7 +20,7 @@ function* getWinners(): Generator {
   }
 }
 
-function* getWinner(action: IActionType): Generator {
+function* getWinner(action: { type: string; payload: { id: number } }): Generator {
   try {
     const { id } = action.payload;
     const winnerResult: IWinnerCar = (yield call(getWinnerRequest, id)) as IWinnerCar;
@@ -53,7 +53,7 @@ function* updateWinner(action: {
   }
 }
 
-function* deleteWinner(action: IActionType): Generator {
+function* deleteWinner(action: { type: string; payload: { id: number } }): Generator {
   try {
     const { id } = action.payload;
     yield call(deleteWinnerRequest, id);

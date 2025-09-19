@@ -1,5 +1,5 @@
 import { ICar, IEngineState } from '../reducers/type';
-import { GarageTypes } from '../types/GarageTypes';
+import GarageTypes from '../types/GarageTypes';
 
 export const getCarsAction = () => ({
   type: GarageTypes.GET_CARS,
@@ -50,11 +50,6 @@ export const stopEngineAction = (id: number) => ({
   payload: { id },
 });
 
-export const driveEngineAction = (id: number) => ({
-  type: GarageTypes.DRIVE_ENGINE,
-  payload: { id },
-});
-
 export const setCarPositionAction = (carId: number, position: number) => ({
   type: GarageTypes.SET_CAR_POSITION,
   payload: { carId, position },
@@ -70,9 +65,9 @@ export const setIsRaceStartAction = (isRaceStart: boolean) => ({
   payload: isRaceStart,
 });
 
-export const setIsStartAction = (id: number, value: boolean) => ({
+export const setIsStartAction = (id: number, isStart: boolean) => ({
   type: GarageTypes.SET_IS_START,
-  payload: { id, value },
+  payload: { id, isStart },
 });
 
 export const getCurrentStateAction = () => ({

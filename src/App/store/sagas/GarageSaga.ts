@@ -1,5 +1,5 @@
 import { takeEvery, call, put } from 'redux-saga/effects';
-import { GarageTypes } from '../types/GarageTypes';
+import GarageTypes from '../types/GarageTypes';
 import { setCarAction, setCarsAction, setEngineStateAction } from '../actions/GarageActions';
 import {
   addCarRequest,
@@ -9,7 +9,7 @@ import {
   switchEngineRequest,
   updateCarRequest,
 } from '../../services/routes/garage';
-import { IActionType, ICar } from '../reducers/type';
+import { ICar } from '../reducers/type';
 
 function* getCars(): Generator {
   try {
@@ -21,13 +21,13 @@ function* getCars(): Generator {
   }
 }
 
-function* getCar(action: IActionType): Generator {
+function* getCar(action: { type: string; payload: { id: number } }): Generator {
   try {
     const { id } = action.payload;
     const carResult: ICar = (yield call(getCarRequest, id)) as ICar;
-    yield put(setCarAction(carResult ?? {}));
+    yield put(setCarAction(carResult ?? ({} as ICar)));
   } catch (error) {
-    console.error('Saga error in getCars:', error);
+    console.error('Saga error in getCar:', error);
     yield put(setCarsAction([]));
   }
 }
@@ -42,17 +42,21 @@ function* addCar(action: { type: string; payload: { name: string; color: string 
   }
 }
 
-function* updateCar(action: IActionType) {
+function* updateCar(action: {
+  type: string;
+  payload: { id: number; data: { name: string; color: string } };
+}): Generator {
   try {
-    yield call(updateCarRequest, action.payload.id, action.payload.data);
-    const carsResult: ICar[] = yield call(getCarsRequest);
+    const { id, data } = action.payload;
+    yield call(updateCarRequest, id, data);
+    const carsResult: ICar[] = (yield call(getCarsRequest)) as ICar[];
     yield put(setCarsAction(carsResult ?? []));
   } catch (error) {
     console.error('Saga error in updateCar:', error);
   }
 }
 
-function* deleteCar(action: IActionType): Generator {
+function* deleteCar(action: { type: string; payload: { id: number } }): Generator {
   try {
     const { id } = action.payload;
     yield call(deleteCarRequest, id);
@@ -75,41 +79,18 @@ function* startEngine(action: { type: string; payload: { id: number } }) {
         distance,
       }),
     );
-
-    yield call(switchEngineRequest, id, 'drive');
-
-    yield put(
-      setEngineStateAction(id, {
-        status: 'drive',
-        velocity,
-        distance,
-      }),
-    );
+    if (velocity > 0) {
+      yield call(switchEngineRequest, id, 'drive');
+      yield put(
+        setEngineStateAction(id, {
+          status: 'drive',
+          velocity,
+          distance,
+        }),
+      );
+    }
   } catch (error) {
     console.error('Saga error in startEngine:', error);
-    yield put(
-      setEngineStateAction(id, {
-        status: 'stopped',
-        velocity: 0,
-        distance: 0,
-      }),
-    );
-  }
-}
-
-function* driveEngine(action: { type: string; payload: { id: number } }) {
-  const { id } = action.payload;
-  try {
-    const { velocity, distance } = yield call(switchEngineRequest, id, 'drive');
-    yield put(
-      setEngineStateAction(id, {
-        status: 'drive',
-        velocity,
-        distance,
-      }),
-    );
-  } catch (error) {
-    console.error('Saga error in driveEngine:', error);
     yield put(
       setEngineStateAction(id, {
         status: 'stopped',
@@ -144,5 +125,4 @@ export default function* watchGarageSaga() {
   yield takeEvery(GarageTypes.DELETE_CAR, deleteCar);
   yield takeEvery(GarageTypes.START_ENGINE, startEngine);
   yield takeEvery(GarageTypes.STOP_ENGINE, stopEngine);
-  yield takeEvery(GarageTypes.DRIVE_ENGINE, driveEngine);
 }

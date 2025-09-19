@@ -1,12 +1,17 @@
-import { WinnerTypes } from '../types/WinnerTypes';
-import { IActionType, IWinnerState } from './type';
+import WinnerTypes from '../types/WinnerTypes';
+import { IWinner, IWinnerCar, IWinnerState } from './type';
 
 const INIT_STATE: IWinnerState = {
   winners: [],
   selectedWinner: null,
 };
 
-const winnerReducer = (state: IWinnerState | undefined, action: IActionType): IWinnerState => {
+type IWinnerAction =
+  | { type: WinnerTypes.SET_WINNERS; payload: IWinner[] }
+  | { type: WinnerTypes.ADD_WINNER; payload: IWinner }
+  | { type: WinnerTypes.SET_WINNER; payload: IWinnerCar };
+
+const winnerReducer = (state: IWinnerState | undefined, action: IWinnerAction): IWinnerState => {
   if (state === undefined) {
     return INIT_STATE;
   }

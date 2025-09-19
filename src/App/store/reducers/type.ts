@@ -1,8 +1,3 @@
-export interface IActionType {
-  type: string;
-  payload?: any;
-}
-
 export interface ICar {
   id: number;
   name: string;

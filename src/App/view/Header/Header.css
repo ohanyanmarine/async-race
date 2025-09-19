@@ -23,9 +23,9 @@
 
 @media (max-width: 768px) {
   .header {
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: nowrap;
     align-items: center;
-    gap: 2rem;
   }
 
   .buttonGroup {
@@ -35,6 +35,10 @@
   }
 
   .headerImage {
-    width: 80%;
+    width: 60%;
+  }
+  .headerImage {
+    height: auto;
+    margin-left: 0;
   }
 }

@@ -18,9 +18,8 @@
 }
 
 .car {
-  margin-left: 10px;
+  margin-left: 5px;
   position: relative;
-  transition: transform linear;
 }
 
 .car-name {
@@ -29,4 +28,51 @@
   font-size: 18px;
   font-weight: 600;
   text-transform: uppercase;
+}
+
+.car svg {
+  width: 50px;
+  height: 25px;
+}
+
+@media (max-width: 768px) {
+  .lane {
+    height: 70px;
+    padding: 0 8px;
+  }
+
+  .car-name {
+    font-size: 14px;
+    margin-left: 30px;
+  }
+
+  .car svg {
+    width: 40px;
+    height: 20px;
+  }
+  
+  .controls {
+    gap: 2px;
+  }
+
+  .buttongroup {
+    gap: 2px;
+  }
+}
+
+@media (max-width: 768px) {
+  .lane {
+    height: 50px;
+    padding: 0 8px;
+  }
+
+  .car-name {
+    font-size: 12px;
+    margin-left: 30px;
+  }
+
+  .car svg {
+    width: 36px;
+    height: 18px;
+  }
 }

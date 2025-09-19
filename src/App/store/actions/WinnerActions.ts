@@ -1,5 +1,5 @@
 import { IWinner, IWinnerCar } from '../reducers/type';
-import { WinnerTypes } from '../types/WinnerTypes';
+import WinnerTypes from '../types/WinnerTypes';
 
 export const getWinnersAction = () => ({
   type: WinnerTypes.GET_WINNERS,

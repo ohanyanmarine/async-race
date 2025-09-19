@@ -1,5 +1,5 @@
-import { GarageTypes } from '../types/GarageTypes';
-import { IActionType, IGarageState } from './type';
+import GarageTypes from '../types/GarageTypes';
+import { ICar, IEngineState, IGarageState } from './type';
 
 const INIT_STATE: IGarageState = {
   cars: [],
@@ -13,7 +13,17 @@ const INIT_STATE: IGarageState = {
   },
 };
 
-const garageReducer = (state: IGarageState | undefined, action: IActionType): IGarageState => {
+type IGarageAction =
+  | { type: GarageTypes.SET_CARS; payload: ICar[] }
+  | { type: GarageTypes.ADD_CAR; payload: ICar }
+  | { type: GarageTypes.SET_ENGINE_STATE; payload: { carId: number; engine: IEngineState } }
+  | { type: GarageTypes.SET_CAR; payload: ICar }
+  | { type: GarageTypes.SET_CAR_POSITION; payload: { carId: number; position: number } }
+  | { type: GarageTypes.SET_CURRENT_PAGE; payload: number }
+  | { type: GarageTypes.SET_IS_RACE_START; payload: boolean }
+  | { type: GarageTypes.SET_IS_START; payload: { id: number; isStart: boolean } };
+
+const garageReducer = (state: IGarageState | undefined, action: IGarageAction): IGarageState => {
   if (state === undefined) {
     return INIT_STATE;
   }
@@ -66,7 +76,7 @@ const garageReducer = (state: IGarageState | undefined, action: IActionType): IG
         ...state,
         currentState: {
           ...state.currentState,
-          isStart: { ...state.currentState.isStart, [action.payload.id]: action.payload.value },
+          isStart: { ...state.currentState.isStart, [action.payload.id]: action.payload.isStart },
         },
       };
 

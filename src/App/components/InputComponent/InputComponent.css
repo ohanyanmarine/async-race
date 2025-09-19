@@ -1,16 +1,47 @@
 .input-outlined {
   font-family: 'Orbitron', sans-serif;
-  font-size: 12px;
+  font-size: 14px;
   border: 1px solid #ccc;
   transition: all 0.3s ease;
   border-radius: 6px;
   padding: 8px 12px;
   box-sizing: border-box;
-  margin: 8px;
+  margin: 5px;
   text-transform: uppercase;
+  width: 160px;
+  min-width: 100px;
 }
 
 .input-color {
-  width: 25px;
-  height: 25px;
+  width: 30px;
+  height: 30px;
+  margin: 8px;
+}
+
+@media (max-width: 768px) {
+  .input-outlined {
+    font-size: 10px;
+    padding: 6px 10px;
+    width: 120px;
+  }
+
+  .input-color {
+    width: 25px;
+    height: 25px;
+  }
+}
+
+@media (max-width: 425px) {
+  .input-outlined {
+    font-size: 8px;
+    padding: 5px 8px;
+    width: 100px;
+    margin: 4px;
+  }
+
+  .input-color {
+    width: 24px;
+    height: 24px;
+    margin: 2px;
+  }
 }

@@ -4,3 +4,8 @@ body {
   color: white;
   padding: 50px 100px;
 }
+@media (max-width: 480px) {
+  body {
+    padding: 50px 10px;
+  }
+}
