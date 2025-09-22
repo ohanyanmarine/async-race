@@ -43,3 +43,8 @@ export interface IWinnerCar {
   bestTime: number;
   color: string;
 }
+
+export interface RaceResult {
+  car: ICar;
+  time: number;
+}

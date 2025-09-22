@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   addCarAction,
@@ -21,7 +21,7 @@ import {
   setWinnerAction,
   updateWinnerAction,
 } from '../../store/actions/WinnerActions';
-import { ICar, IEngineState, IWinner } from '../../store/reducers/type';
+import { ICar, IEngineState, IWinner, RaceResult } from '../../store/reducers/type';
 import {
   carsSelector,
   currentStateSelector,
@@ -29,48 +29,7 @@ import {
   positionsSelector,
 } from '../../store/selectors/GarageSelector';
 import { selectedWinnerSelector, winnersSelector } from '../../store/selectors/WinnerSelector';
-
-interface RaceResult {
-  car: ICar;
-  time: number;
-}
-
-const carBrands = [
-  'Tesla',
-  'Ford',
-  'BMW',
-  'Audi',
-  'Mercedes',
-  'Honda',
-  'Toyota',
-  'Chevrolet',
-  'Nissan',
-  'Porsche',
-];
-const carModels = [
-  'Model S',
-  'Mustang',
-  'X5',
-  'A4',
-  'C-Class',
-  'Civic',
-  'Corolla',
-  'Camaro',
-  'Altima',
-  '911',
-];
-const carColors = [
-  'red',
-  'blue',
-  'green',
-  'yellow',
-  'black',
-  'white',
-  'silver',
-  'orange',
-  'purple',
-  'brown',
-];
+import { carBrands, carColors, carModels } from './util';
 
 const GarageHook = () => {
   const dispatch = useDispatch();
@@ -81,8 +40,8 @@ const GarageHook = () => {
   const currentState = useSelector(currentStateSelector);
   const stateCurrentPage = currentState.currentPage;
   const stateIsRaceStart = currentState.isRaceStart;
-  const stateIsStart: Record<number, boolean> = currentState.isStart || {};
   const carPositions = useSelector(positionsSelector);
+  const memoStateIsStart = useMemo(() => currentState.isStart || {}, [currentState.isStart]);
 
   const itemsPerPage = 7;
   const indexOfLastItem = stateCurrentPage * itemsPerPage;
@@ -106,26 +65,18 @@ const GarageHook = () => {
   const finishedCarsRef = useRef<Set<number>>(new Set());
   const waitersRef = useRef<Record<number, (v?: void) => void>>({});
 
-  // const finishLine = window.innerWidth * 0.65;
-  const finishLineRef = useRef<HTMLDivElement | null>(null);
-  const raceTrackRef = useRef<HTMLDivElement | null>(null);
   const startLineRef = useRef<HTMLDivElement | null>(null);
+  const lanesRef = useRef<HTMLDivElement | null>(null);
 
   const [finishLine, setFinishLine] = useState(0);
 
   useLayoutEffect(() => {
     const updateFinishLine = () => {
-      if (finishLineRef.current && startLineRef.current && raceTrackRef.current) {
-        const finishrect = finishLineRef.current.getBoundingClientRect();
-        const rect1 = raceTrackRef.current.getBoundingClientRect();
+      if (startLineRef.current) {
         const startrect = startLineRef.current.getBoundingClientRect();
-        console.log('startrect ', startrect);
-        console.log('rect1 ', rect1);
-        console.log('finishrect ', finishrect);
-        const containerRect = finishLineRef.current.parentElement?.getBoundingClientRect();
-        const carWidth = 50;
-        if (containerRect) {
-          setFinishLine(finishrect.x - startrect.x + carWidth + finishrect.width);
+        const lanesrect = lanesRef.current?.getBoundingClientRect();
+        if (lanesrect) {
+          setFinishLine(lanesrect.right - startrect.left);
         }
       }
     };
@@ -135,21 +86,20 @@ const GarageHook = () => {
     window.addEventListener('resize', updateFinishLine);
     return () => window.removeEventListener('resize', updateFinishLine);
   }, [cars]);
+
   useEffect(() => {
     engineRef.current = engine;
-    console.log('finishLineRef.current:', finishLineRef.current);
-    console.log('finishLine:', finishLine);
   }, [engine]);
 
   useEffect(() => {
     dispatch(getCarsAction());
     dispatch(getWinnersAction());
     dispatch(getCurrentStateAction());
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if (carPositions) setPositions({ ...carPositions });
-  }, []);
+  }, [carPositions]);
 
   const validateCarName = (name: string) => name.trim().length >= 3 && name.trim().length <= 15;
 
@@ -212,7 +162,7 @@ const GarageHook = () => {
     const eng = engineRef.current[id];
     if (eng && eng.status !== 'stopped') dispatch(stopEngineAction(id));
     dispatch(setIsStartAction(id, false));
-    const pos = resetToStart ? 0 : positions[id] || 0;
+    const pos = resetToStart ? 0 : positions[id];
     setPositions((prev) => ({ ...prev, [id]: pos }));
     dispatch(setCarPositionAction(id, pos));
   };
@@ -235,17 +185,14 @@ const GarageHook = () => {
           return;
         }
 
-        start += velocity * 0.05;
-
-        console.log('start: ', start);
-        console.log('positions: ', positions[id]);
+        start += velocity * 0.02;
 
         if (start >= finishLine) {
           start = finishLine;
           if (!finishedCarsRef.current.has(id)) {
             finishedCarsRef.current.add(id);
-            dispatch(stopEngineAction(id));
             setPositions((prev) => ({ ...prev, [id]: start }));
+            dispatch(stopEngineAction(id));
             if (!modalShownRef.current && raceStartedRef.current) {
               modalShownRef.current = true;
               setFinish(true);
@@ -258,13 +205,13 @@ const GarageHook = () => {
         }
 
         setPositions((prev) => ({ ...prev, [id]: start }));
-        dispatch(setCarPositionAction(id, start));
+        // dispatch(setCarPositionAction(id, start));
         animationRefs.current[id] = requestAnimationFrame(animate);
       };
       if (animationRefs.current[id]) cancelAnimationFrame(animationRefs.current[id]);
       animationRefs.current[id] = requestAnimationFrame(animate);
     },
-    [cars, positions],
+    [cars, positions, dispatch, finishLine],
   );
 
   useEffect(() => {
@@ -303,7 +250,7 @@ const GarageHook = () => {
     clearAnimations();
 
     const promises = cars
-      .filter((car: ICar) => !stateIsStart[car.id])
+      .filter((car: ICar) => !memoStateIsStart[car.id])
       .map((car: ICar) => {
         dispatch(setIsStartAction(car.id, true));
         dispatch(setIsRaceStartAction(true));
@@ -313,14 +260,19 @@ const GarageHook = () => {
 
     await Promise.all(promises);
     cars.forEach((car) => moveCar(car.id));
-  }, [cars, stateIsStart, dispatch, moveCar]);
+  }, [cars, memoStateIsStart, dispatch, moveCar]);
+
+  useEffect(() => {
+    Object.entries(positions).forEach(([carId, position]) => {
+      dispatch(setCarPositionAction(Number(carId), position));
+    });
+  }, [engine]);
 
   useEffect(() => {
     if (finish && raceStartedRef.current) {
-      Object.entries(positions).forEach(([carId, position]) => {
-        dispatch(setCarPositionAction(Number(carId), position));
-      });
-
+      // Object.entries(positions).forEach(([carId, position]) => {
+      //   dispatch(setCarPositionAction(Number(carId), position));
+      // });
       const raceResults: RaceResult[] = cars
         .map((car: ICar) => {
           const engineState = engine[car.id];
@@ -385,7 +337,7 @@ const GarageHook = () => {
     positions,
     startEngine,
     stopEngine,
-    stateIsStart,
+    memoStateIsStart,
     startRace,
     getCar,
     resetRace,
@@ -395,9 +347,8 @@ const GarageHook = () => {
     stateCurrentPage,
     handlePageChange,
     stateIsRaceStart,
-    finishLineRef,
-    raceTrackRef,
     startLineRef,
+    lanesRef,
   };
 };
 

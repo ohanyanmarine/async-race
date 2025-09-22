@@ -51,7 +51,7 @@ const Winners: React.FC = () => {
               return (
                 <tr key={winner.id}>
                   <td>{winner.id}</td>
-                  <td>
+                  <td className="car">
                     <CarTopIcon color={winner.color} />
                   </td>
                   <td>{winner.name}</td>

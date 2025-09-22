@@ -1,7 +1,7 @@
 ## Deployment
 🔗 https://ohanyanmarine.github.io/async-race
 
-## Score - 370 points
+## Score - 400 points
 
 - [x] Two Views (10 points)  
 - [x] Garage View Content (30 points)  
@@ -21,7 +21,7 @@
 - [x] Sorting Functionality (10 points)  
 - [x] Start Engine Animation (20 points)  
 - [x] Stop Engine Animation (20 points)  
-- [ ] Responsive Animation (30 points)  
+- [x] Responsive Animation (30 points)  
 - [x] Start Race Button (10 points)  
 - [x] Reset Race Button (15 points)  
 - [x] Winner Announcement (5 points)  

@@ -1,0 +1,36 @@
+export const carBrands = [
+  'Tesla',
+  'Ford',
+  'BMW',
+  'Audi',
+  'Mercedes',
+  'Honda',
+  'Toyota',
+  'Chevrolet',
+  'Nissan',
+  'Porsche',
+];
+export const carModels = [
+  'Model S',
+  'Mustang',
+  'X5',
+  'A4',
+  'C-Class',
+  'Civic',
+  'Corolla',
+  'Camaro',
+  'Altima',
+  '911',
+];
+export const carColors = [
+  'red',
+  'blue',
+  'green',
+  'yellow',
+  'black',
+  'white',
+  'silver',
+  'orange',
+  'purple',
+  'brown',
+];

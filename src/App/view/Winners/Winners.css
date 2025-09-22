@@ -72,3 +72,26 @@ th button {
   color: #ff66ff;
   cursor: pointer;
 }
+
+@media (max-width: 480px) {
+  .winners-table th,
+  .winners-table td {
+    font-size: 12px;
+    padding: 6px;
+  }
+
+  th .arrows {
+    display: flex;
+    margin-left: 2px;
+    gap: 4px;
+  }
+
+  .car svg {
+    width: 36px;
+    height: 18px;
+  }
+  
+  th .sortable {
+    gap: 6px;
+  }
+}

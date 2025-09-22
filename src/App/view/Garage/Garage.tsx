@@ -38,10 +38,9 @@ const Garage: React.FC = () => {
     stateCurrentPage,
     handlePageChange,
     stateIsRaceStart,
-    stateIsStart,
-    finishLineRef,
-    raceTrackRef,
+    memoStateIsStart,
     startLineRef,
+    lanesRef,
   } = useGarageHook();
   return (
     <div className="main-content">
@@ -108,8 +107,8 @@ const Garage: React.FC = () => {
       </div>
       {cars.length !== 0 ? (
         <>
-          <div ref={raceTrackRef} className="race-track">
-            <div className="lanes">
+          <div className="race-track">
+            <div className="lanes" ref={lanesRef}>
               {currentItems.map((item: ICar) => (
                 <RoadComponent
                   key={item.id}
@@ -123,8 +122,8 @@ const Garage: React.FC = () => {
                   onPressRemove={() => removeCar(item.id)}
                   onPressA={() => startEngine(item.id)}
                   onPressB={() => stopEngine(item.id, true)}
-                  disabledA={stateIsStart[item.id]}
-                  disabledB={!stateIsStart[item.id]}
+                  disabledA={memoStateIsStart[item.id]}
+                  disabledB={!memoStateIsStart[item.id]}
                   isRace={stateIsRaceStart}
                 />
               ))}
@@ -132,9 +131,7 @@ const Garage: React.FC = () => {
             <div ref={startLineRef} className="start-line">
               START
             </div>
-            <div ref={finishLineRef} className="finish-line">
-              FINISH
-            </div>
+            <div className="finish-line">FINISH</div>
           </div>
           <div className="footer">
             <div className="pagination-bar">
@@ -145,7 +142,6 @@ const Garage: React.FC = () => {
                   itemsPerPage={itemsPerPage}
                   currentPage={stateCurrentPage}
                   onPageChange={handlePageChange}
-                  // isRace={stateIsRaceStart}
                 />
               </div>
             </div>
