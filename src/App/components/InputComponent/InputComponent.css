@@ -31,7 +31,7 @@
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 500px) {
   .input-outlined {
     font-size: 8px;
     padding: 5px 8px;

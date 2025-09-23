@@ -205,7 +205,6 @@ const GarageHook = () => {
         }
 
         setPositions((prev) => ({ ...prev, [id]: start }));
-        // dispatch(setCarPositionAction(id, start));
         animationRefs.current[id] = requestAnimationFrame(animate);
       };
       if (animationRefs.current[id]) cancelAnimationFrame(animationRefs.current[id]);
@@ -243,13 +242,13 @@ const GarageHook = () => {
     [dispatch, moveCar],
   );
 
-  const startRace = useCallback(async () => {
+  const startRace = async () => {
     modalShownRef.current = false;
     raceStartedRef.current = true;
     setFinish(false);
     clearAnimations();
 
-    const promises = cars
+    const promises = currentItems
       .filter((car: ICar) => !memoStateIsStart[car.id])
       .map((car: ICar) => {
         dispatch(setIsStartAction(car.id, true));
@@ -259,8 +258,8 @@ const GarageHook = () => {
       });
 
     await Promise.all(promises);
-    cars.forEach((car) => moveCar(car.id));
-  }, [cars, memoStateIsStart, dispatch, moveCar]);
+    currentItems.forEach((car) => moveCar(car.id));
+  };
 
   useEffect(() => {
     Object.entries(positions).forEach(([carId, position]) => {
@@ -270,10 +269,7 @@ const GarageHook = () => {
 
   useEffect(() => {
     if (finish && raceStartedRef.current) {
-      // Object.entries(positions).forEach(([carId, position]) => {
-      //   dispatch(setCarPositionAction(Number(carId), position));
-      // });
-      const raceResults: RaceResult[] = cars
+      const raceResults: RaceResult[] = currentItems
         .map((car: ICar) => {
           const engineState = engine[car.id];
           if (!engineState || engineState.velocity <= 0) return null;

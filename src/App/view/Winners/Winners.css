@@ -73,7 +73,7 @@ th button {
   cursor: pointer;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 500px) {
   .winners-table th,
   .winners-table td {
     font-size: 12px;

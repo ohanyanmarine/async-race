@@ -60,14 +60,10 @@
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 500px) {
   .lane {
     padding: 0 8px;
   }
-
-  .car {
-  margin-left: 0;
-}
 
   .car-name {
     font-size: 12px;

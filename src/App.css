@@ -4,7 +4,7 @@ body {
   color: white;
   padding: 50px 100px;
 }
-@media (max-width: 480px) {
+@media (max-width: 500px) {
   body {
     padding: 50px 10px;
   }

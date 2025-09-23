@@ -156,13 +156,9 @@
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 500px) {
   .inputs {
-    gap: 4px;
-  }
-
-  .pagination-bar {
-    font-size: 12px;
+    gap: 2px;
   }
 
   .race-track {
@@ -171,10 +167,7 @@
   }
 
   .start-line {
-    left: 31%;
-  }
-
-  .finish-line {
-    left: 85%;
+    left: 28%;
   }
 }
+

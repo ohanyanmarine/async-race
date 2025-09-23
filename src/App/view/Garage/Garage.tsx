@@ -142,6 +142,7 @@ const Garage: React.FC = () => {
                   itemsPerPage={itemsPerPage}
                   currentPage={stateCurrentPage}
                   onPageChange={handlePageChange}
+                  isRace={stateIsRaceStart}
                 />
               </div>
             </div>
